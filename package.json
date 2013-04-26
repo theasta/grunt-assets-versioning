@@ -1,0 +1,46 @@
+{
+  "name": "grunt-assets-versioning",
+  "description": "Versioning static assets with Grunt",
+  "version": "0.1.0",
+  "homepage": "https://github.com/theasta/grunt-assets-versioning",
+  "author": {
+    "name": "Alexandrine Boissière",
+    "email": "theasta@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/theasta/grunt-assets-versioning.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theasta/grunt-assets-versioning/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/theasta/grunt-assets-versioning/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-contrib-nodeunit": "~0.1.2",
+    "grunt": "~0.4.1",
+    "grunt-contrib-concat": "~0.2.0"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.1"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "dependencies": {
+    "moment": "~2.0.0"
+  }
+}
