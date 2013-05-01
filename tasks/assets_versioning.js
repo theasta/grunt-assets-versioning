@@ -17,6 +17,7 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('assets_versioning', 'Static Assets revving', function() {
 
+    var defaultOptions = {};
     var options = this.options({
       use: 'date',
       hashLength: 8,
@@ -29,13 +30,35 @@ module.exports = function(grunt) {
       },
       output: null,
       skipExisting: false,
-      taskToRun: false,
-      runTask: false
+      multitask: false,
+      multitaskTarget: this.target,
+      runTask: true
     });
 
-    var obj = { files: [] };
+    var revFiles = [];
     var output = [];
-    this.files.forEach(function(f){
+
+    var taskFiles = this.files;
+
+    var surrogateTask, surrogateTaskConfigKey, taskConfig, taskConfigKey, taskToRun;
+    if (options.multitask) {
+      // @todo check if tasks exists
+      taskConfigKey = options.multitask + '.' + options.multitaskTarget;
+      taskConfig = grunt.config.get(taskConfigKey);
+
+      if (this.data.files == null) {
+        if (taskConfig) {
+          taskFiles = grunt.task.normalizeMultiTaskFiles(taskConfig, this.target);
+        }
+      }
+
+      taskToRun = options.multitask + ':' + options.multitaskTarget;
+      surrogateTask = taskToRun + '_' + this.name;
+      surrogateTaskConfigKey = taskConfigKey + '_' + this.name;
+    }
+
+
+    taskFiles.forEach(function(f){
 
       if (f.src.length === 0) {
         grunt.log.warn('src is an empty array');
@@ -88,7 +111,7 @@ module.exports = function(grunt) {
         }
 
         // log the src, dest data
-        obj.files.push({ src: f.src, dest: destFilePath });
+        revFiles.push({ src: f.src, dest: destFilePath });
       }
     });
 
@@ -96,12 +119,19 @@ module.exports = function(grunt) {
       fs.writeFileSync(options.output, JSON.stringify(output));
     }
 
-    grunt.config.set(this.name + '.log.'+ this.target, obj);
+    grunt.config.set(this.name + '.'+ this.target + '.revFiles' , revFiles);
 
-    if (options.taskToRun) {
-      grunt.config.set(options.taskToRun + '.' + this.target, obj);
+    // run task if defined
+    if (surrogateTask) {
+      if (taskConfig) {
+        taskConfig.files = revFiles;
+      } else {
+        taskConfig = { files: revFiles };
+      }
+      grunt.config.set(surrogateTaskConfigKey, taskConfig);
+
       if (options.runTask) {
-        grunt.task.run(options.taskToRun + ':' + this.target);
+        grunt.task.run(surrogateTask);
       }
     }
   });

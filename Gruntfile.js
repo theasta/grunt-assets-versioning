@@ -26,6 +26,7 @@ module.exports = function(grunt) {
     // Before generating any new files, remove any previously-created files.
     clean: {
       tests: ['tmp/*'],
+      //tests: ['tmp/*.json'],
     },
 
     // Configuration to be run (and then tested).
@@ -34,7 +35,7 @@ module.exports = function(grunt) {
         options: {
           use           : 'date',
           dateFormat    : 'YYMMDDhhmmss',
-          taskToRun     : 'concat',
+          multitask     : 'concat',
           output        : 'tmp/bundles_with_date.json',
           outputTrimDir : 'tmp/js/'
         },
@@ -42,6 +43,15 @@ module.exports = function(grunt) {
           'tmp/js/js_bundle_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
           'tmp/js/js_bundle_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'],
         }
+      },
+      files_from_another_task: {
+        files: '<%= concat.test1.files %>',
+        options: {
+          multitask     : 'concat',
+          multitaskTarget    : 'test1',
+          skipExisting  : true,
+          output        : 'tmp/files_from_another_task.json'
+        },
       },
       images_with_date: {
         files:[{
@@ -82,7 +92,14 @@ module.exports = function(grunt) {
           output     : 'tmp/images_with_hash.json'
         }
       },
+    },
 
+    concat: {
+      test1:{
+        files: {
+          'tmp/js/js_bundle.js': ['test/fixtures/js/**/*.js', '!test/fixtures/js/file3.js'],
+        }
+      }
     },
 
     // Unit tests.
