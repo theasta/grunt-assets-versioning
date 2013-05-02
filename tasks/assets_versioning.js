@@ -17,7 +17,8 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('assets_versioning', 'Static Assets revving', function() {
 
-    var defaultOptions = {};
+    var done = this.async();
+
     var options = this.options({
       use: 'date',
       hashLength: 8,
@@ -134,6 +135,7 @@ module.exports = function(grunt) {
         grunt.task.run(surrogateTask);
       }
     }
+    done();
   });
 
 };
