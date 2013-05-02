@@ -118,7 +118,7 @@ module.exports = function(grunt) {
     });
 
     if (options.output) {
-      fs.writeFileSync(options.output, JSON.stringify(output));
+      grunt.file.write(options.output, JSON.stringify(output));
     }
 
     grunt.config.set(this.name + '.'+ this.target + '.revFiles' , revFiles);
