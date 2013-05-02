@@ -51,12 +51,29 @@ Default value: `YYYYMMDDHHmmss8'
 If you choose to version your files using a date, you can specify a
 dateformat. grunt-assets-versioning is using moment.js to format date.
 
+#### options.dateStart
+Type: `Date` or `Boolean`
+Default value: `false'
+
 #### options.hashLength
 Type: `Integer`
 Default value: `8'
 
 If you choose to version your files using a hash, hashLength let you set how
 long the hash is going to be.
+
+#### options.multitask
+Type: `String` or `Boolean`
+Default value: `false'
+
+#### options.multitaskTarget
+Type: `String`
+Default value: The target name
+
+#### options.skipExisting
+Type: `Boolean`
+Default value: `false`
+
 
 ### Usage Examples
 
