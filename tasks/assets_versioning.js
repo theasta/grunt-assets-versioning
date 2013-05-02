@@ -85,7 +85,8 @@ module.exports = function(grunt) {
           hash = crypto.createHash('md5').update(hash).digest('hex');
         }
         rev = hash;
-        if (!isNaN(options.hashLength)) {
+        var hashLength = parseInt(options.hashLength, 10);
+        if (Object.prototype.toString.call(hashLength) === '[object Number]') {
           rev = rev.substr(0, options.hashLength);
         }
       } else {
