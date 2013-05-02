@@ -95,19 +95,19 @@ module.exports = function(grunt) {
         // @todo : should I check if f.dest if not null ? or should it be done from inside the rename function ?
         var destFilePath = options.rename.call(this, f.dest, rev);
 
+        if (options.output) {
+          output.push({
+            rev: rev,
+            path: f.dest.replace(options.outputTrimDir, ''),
+            revved_path: destFilePath.replace(options.outputTrimDir, ''),
+          });
+        }
+
         // check if file already exists
         if (options.skipExisting === true) {
           if (grunt.file.exists(destFilePath)) {
             return false;
           }
-        }
-
-        if (options.output) {
-          output.push({
-            rev: rev,
-            dest: f.dest.replace(options.outputTrimDir, ''),
-            dest_revved: destFilePath.replace(options.outputTrimDir, ''),
-          });
         }
 
         // log the src, dest data
