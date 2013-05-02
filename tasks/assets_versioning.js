@@ -41,20 +41,20 @@ module.exports = function(grunt) {
 
     var taskFiles = this.files;
 
-    var surrogateTask, surrogateTaskConfigKey, taskConfig, taskConfigKey, taskToRun;
+    var surrogateTask, surrogateTaskConfigKey, taskConfig, taskConfigKey;
     if (options.multitask) {
       // @todo check if tasks exists
       taskConfigKey = options.multitask + '.' + options.multitaskTarget;
       taskConfig = grunt.config.get(taskConfigKey);
 
+      // if there is no 'files' property, try to get the files from the multitask
       if (this.data.files == null) {
         if (taskConfig) {
           taskFiles = grunt.task.normalizeMultiTaskFiles(taskConfig, this.target);
         }
       }
 
-      taskToRun = options.multitask + ':' + options.multitaskTarget;
-      surrogateTask = taskToRun + '_' + this.name;
+      surrogateTask = options.multitask + ':' + options.multitaskTarget + '_' + this.name;
       surrogateTaskConfigKey = taskConfigKey + '_' + this.name;
     }
 
@@ -123,7 +123,7 @@ module.exports = function(grunt) {
 
     grunt.config.set(this.name + '.'+ this.target + '.revFiles' , revFiles);
 
-    // run task if defined
+    // run surrogate task if defined
     if (surrogateTask) {
       if (taskConfig) {
         taskConfig.files = revFiles;
