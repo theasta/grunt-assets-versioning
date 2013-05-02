@@ -37,46 +37,61 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.use
 Type: `String`
-Default value: `',  '`
+Possible values: `date`, `hash`
+Default value: `date'
 
-A string value that is used to do something with whatever.
+You can either version your files using a hash or a date.
 
-#### options.punctuation
+#### options.dateFormat
 Type: `String`
-Default value: `'.'`
+Default value: `YYYYMMDDHHmmss8'
 
-A string value that is used to do something else with whatever else.
+If you choose to version your files using a date, you can specify a
+dateformat. grunt-assets-versioning is using moment.js to format date.
+
+#### options.hashLength
+Type: `Integer`
+Default value: `8'
+
+If you choose to version your files using a hash, hashLength let you set how
+long the hash is going to be.
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  assets_versioning: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-})
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Versioning using a date
+In this example, dest.bundle.js is going to be versioned with a date, using
+the default format YYYYMMDDHHmmss. The newest modification dates of all src files is
+going to be used to create this timestamp. The generated result should be
+dest/bundle.20130413004500.js
 
 ```js
 grunt.initConfig({
   assets_versioning: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      use: 'date',
     },
     files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+      'dest/bundle.js': ['src/file1.js', 'src/file2.js'],
+    },
+  },
+})
+```
+
+#### Versioning using a hash
+In this example, dest.bundle.js is going to be versioned with a hash. All sources files are going to be hashed and those hashes are also going to be hashed. The generated result should be
+dest/bundle.2j4h2k.js
+
+```js
+grunt.initConfig({
+  assets_versioning: {
+    options: {
+      use: 'hash',
+      hashLength: 6,
+    },
+    files: {
+      'dest/bundle.js': ['src/file1.js', 'src/file2.js'],
     },
   },
 })
