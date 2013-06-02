@@ -29,7 +29,7 @@ grunt.initConfig({
       // Task-specific options go here.
     },
     your_target: {
-      // Target-specific file lists and/or options go here.
+      multitask: 'uglify'
     },
   },
 })
@@ -42,11 +42,12 @@ Type: `String`
 Possible values: `date`, `hash`
 Default value: `date'
 
-You can either version your files using a hash or a date.
+Should the revision marker be a md5 hash or a date ?
 
 #### options.dateFormat
 Type: `String`
-Default value: `YYYYMMDDHHmmss8'
+Default value: `YYYYMMDDHHmmss'
+
 
 If you choose to version your files using a date, you can specify a
 dateformat. grunt-assets-versioning is using moment.js to format date.
@@ -54,6 +55,10 @@ dateformat. grunt-assets-versioning is using moment.js to format date.
 #### options.dateStart
 Type: `Date` or `Boolean`
 Default value: `false'
+
+Only works if you choose to version your files using a date.
+Only files older than the dateStart will be versioned.
+If set to true, all files will be versioned.
 
 #### options.hashLength
 Type: `Integer`
