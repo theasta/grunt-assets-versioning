@@ -126,6 +126,9 @@ module.exports = function(grunt) {
     // run surrogate task if defined
     if (surrogateTask) {
       if (taskConfig) {
+        // remove src & dest keys as they take precedence over the files key
+        delete taskConfig.src;
+        delete taskConfig.dest;
         taskConfig.files = revFiles;
       } else {
         taskConfig = { files: revFiles };

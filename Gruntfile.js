@@ -91,6 +91,15 @@ module.exports = function(grunt) {
           output     : 'tmp/images_with_hash.json'
         }
       },
+
+      files_compact_format: {
+        options: {
+          use: 'hash',
+          hashLength: 6,
+          multitask: 'concat'
+        }
+      }
+
     },
 
     concat: {
@@ -98,6 +107,15 @@ module.exports = function(grunt) {
         files: {
           'tmp/js/js_bundle.js': ['test/fixtures/js/**/*.js', '!test/fixtures/js/file3.js'],
         }
+      },
+      files_compact_format:{
+        src: [
+          'test/fixtures/js/file1.js',
+          'test/fixtures/js/file2.js',
+          'test/fixtures/js/file3.js'
+        ],
+        filter: 'isFile',
+        dest: 'tmp/js/compact_format.js'
       }
     },
 
