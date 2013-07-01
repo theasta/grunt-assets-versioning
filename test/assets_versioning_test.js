@@ -111,5 +111,5 @@ exports.assets_versioning = {
     test.ok(grunt.file.exists('tmp/js/compact_format.906eac.js'), 'should create a versioned file');
 
     test.done();
-  },
+  }
 };

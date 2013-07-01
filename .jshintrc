@@ -9,6 +9,7 @@
   "undef": true,
   "boss": true,
   "eqnull": true,
+  "laxcomma": false,
   "node": true,
-  "es5": true
+  "strict": true
 }

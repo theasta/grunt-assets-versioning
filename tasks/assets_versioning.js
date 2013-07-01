@@ -101,7 +101,7 @@ module.exports = function(grunt) {
           output.push({
             rev: rev,
             path: f.dest.replace(options.outputTrimDir, ''),
-            revved_path: destFilePath.replace(options.outputTrimDir, ''),
+            revved_path: destFilePath.replace(options.outputTrimDir, '')
           });
         }
 

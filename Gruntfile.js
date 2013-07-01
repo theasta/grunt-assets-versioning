@@ -16,16 +16,16 @@ module.exports = function(grunt) {
       all: [
         'Gruntfile.js',
         'tasks/*.js',
-        '<%= nodeunit.tests %>',
+        '<%= nodeunit.tests %>'
       ],
       options: {
-        jshintrc: '.jshintrc',
-      },
+        jshintrc: '.jshintrc'
+      }
     },
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['tmp'],
+      tests: ['tmp']
     },
 
     // Configuration to be run (and then tested).
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         },
         files: {
           'tmp/js/js_bundle_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
-          'tmp/js/js_bundle_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'],
+          'tmp/js/js_bundle_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       },
       files_from_another_task: {
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
           multitaskTarget    : 'test1',
           skipExisting  : true,
           output        : 'tmp/files_from_another_task.json'
-        },
+        }
       },
       images_with_date: {
         files:[{
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         }],
         options: {
           use         : 'date',
-          output      : 'tmp/images_with_date.json',
+          output      : 'tmp/images_with_date.json'
         }
       },
       images_with_start_date: {
@@ -105,7 +105,7 @@ module.exports = function(grunt) {
     concat: {
       test1:{
         files: {
-          'tmp/js/js_bundle.js': ['test/fixtures/js/**/*.js', '!test/fixtures/js/file3.js'],
+          'tmp/js/js_bundle.js': ['test/fixtures/js/**/*.js', '!test/fixtures/js/file3.js']
         }
       },
       files_compact_format:{
@@ -121,7 +121,7 @@ module.exports = function(grunt) {
 
     // Unit tests.
     nodeunit: {
-      tests: ['test/*_test.js'],
+      tests: ['test/*_test.js']
     },
 
     watch: {
