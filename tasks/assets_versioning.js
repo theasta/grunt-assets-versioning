@@ -90,7 +90,7 @@ module.exports = function(grunt) {
           rev = rev.substr(0, options.hashLength);
         }
       } else {
-        grunt.fail.warn('Invalid argument : options.use should be equal to date or hase');
+        grunt.fail.warn('Invalid argument : options.use should be equal to date or hash');
       }
 
       if (rev !== '') {
