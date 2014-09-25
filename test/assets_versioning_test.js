@@ -15,9 +15,9 @@ exports.assets_versioning = {
     var expectedConfigLog =
       [
         { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.140924063734.js' },
+          dest: 'tmp/js/js_bundle_a.140925013734.js' },
         { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
-          dest: 'tmp/js/js_bundle_b.140101120000.js' }
+          dest: 'tmp/js/js_bundle_b.140101080000.js' }
       ];
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
     test.done();
@@ -32,7 +32,7 @@ exports.assets_versioning = {
     var expectedConfigLog =
       [
         { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.140924063734.js' }
+          dest: 'tmp/js/js_bundle_a.140925013734.js' }
       ];
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
     test.done();
