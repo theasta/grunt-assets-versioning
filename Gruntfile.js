@@ -129,12 +129,12 @@ module.exports = function(grunt) {
         }),
         'file2.js': mock.file({
           content: 'file content here',
-          ctime: new Date(1369100245000),
+          ctime: new Date(1369140245000),
           mtime: new Date(1369140245000) //Tue May 21 2013 05:44:05 GMT-0700 (PDT)
         }),
         'file3.js': mock.file({
           content: 'file content here',
-          ctime: new Date(1328090053000),
+          ctime: new Date(1328091453000),
           mtime: new Date(1328091453000) //Wed Feb 01 2012 02:17:33 GMT-0800 (PST)
         }),
         'file4.js': mock.file({
