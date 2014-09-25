@@ -72,7 +72,7 @@ module.exports = function(grunt) {
         var lastMtime = f.src.map(function(filepath){
           return +fs.statSync(filepath).mtime;
         }).sort().pop();
-        var lastMTimeFormatted = moment(lastMtime).format(options.dateFormat);
+        var lastMTimeFormatted = moment(lastMtime).zone('+0000').format(options.dateFormat);
 
         rev = (!dateStartTime || dateStartTime < lastMtime) ? lastMTimeFormatted : '';
 

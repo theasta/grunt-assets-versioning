@@ -145,10 +145,6 @@ module.exports = function(grunt) {
       }
     });
 
-    var x = new Date()
-    var currentTimeZoneOffsetInHours = x.getTimezoneOffset()/60;
-    console.log('currentTimeZoneOffsetInHours', currentTimeZoneOffsetInHours);
-
     // grunt is using glob that is using graceful-fs.
     // It also needs to be mocked
     _fileGlobSync = grunt.file.glob.sync;

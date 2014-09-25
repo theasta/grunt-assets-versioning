@@ -43,6 +43,6 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "moment": "~2.0.0"
+    "moment": "^2.8.3"
   }
 }
