@@ -34,7 +34,6 @@ module.exports = function(grunt) {
       date_several_sources: {
         options: {
           use           : 'date',
-          dateFormat    : 'YYMMDDhhmmss',
           multitask     : 'concat'
         },
         files: {
@@ -42,12 +41,34 @@ module.exports = function(grunt) {
           'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
         }
       },
-      date_options_startdate: {
+      date_options_startDate: {
         options: {
           use           : 'date',
-          dateFormat    : 'YYMMDDhhmmss',
           multitask     : 'concat',
           dateStart     : new Date(1398573300000) //Sat Apr 26 2014 21:35:00 GMT-0700 (PDT)
+        },
+        files: {
+          'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
+          'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
+        }
+      },
+      date_options_dateFormat: {
+        options: {
+          use           : 'date',
+          dateFormat: 'YYMMDDHHmmss',
+          multitask     : 'concat',
+          timezoneOffset: 7
+        },
+        files: {
+          'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
+          'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
+        }
+      },
+      date_options_timezoneOffset: {
+        options: {
+          use           : 'date',
+          multitask     : 'concat',
+          timezoneOffset: 7
         },
         files: {
           'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
@@ -167,7 +188,9 @@ module.exports = function(grunt) {
     'clean',
     'startMocking',
     'assets_versioning:date_several_sources',
-    'assets_versioning:date_options_startdate',
+    'assets_versioning:date_options_startDate',
+    'assets_versioning:date_options_dateFormat',
+    'assets_versioning:date_options_timezoneOffset',
     'stopMocking',
     'assets_versioning:images_with_hash',
     'assets_versioning:files_compact_format',

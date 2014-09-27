@@ -7,6 +7,7 @@ exports.assets_versioning = {
     // setup here if necessary
     done();
   },
+
   date_several_sources: function(test) {
     test.expect(1);
 
@@ -15,26 +16,59 @@ exports.assets_versioning = {
     var expectedConfigLog =
       [
         { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.140925013734.js' },
+          dest: 'tmp/js/js_bundle_a.20140925013734.js' },
         { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
-          dest: 'tmp/js/js_bundle_b.140101080000.js' }
+          dest: 'tmp/js/js_bundle_b.20140101080000.js' }
       ];
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
     test.done();
   },
 
   // It should exclude files that were created before the startDate options
-  date_options_startdate: function(test) {
+  date_options_startDate: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.date_options_startdate.revFiles');
+    var configLog = grunt.config.get('assets_versioning.date_options_startDate.revFiles');
 
     var expectedConfigLog =
       [
         { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.140925013734.js' }
+          dest: 'tmp/js/js_bundle_a.20140925013734.js' }
       ];
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    test.done();
+  },
+
+  date_options_timezoneOffset: function(test) {
+    test.expect(1);
+
+    var configLog = grunt.config.get('assets_versioning.date_options_timezoneOffset.revFiles');
+
+    var expectedConfigLog =
+      [
+        { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
+          dest: 'tmp/js/js_bundle_a.20140924183734.js' },
+        { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
+          dest: 'tmp/js/js_bundle_b.20140101010000.js' }
+      ];
+    test.deepEqual(configLog, expectedConfigLog, 'Should set a date version tag with a 7 hours offset');
+    test.done();
+  },
+
+  // It should respect the dateFormat passed as an option
+  date_options_dateFormat: function(test) {
+    test.expect(1);
+
+    var configLog = grunt.config.get('assets_versioning.date_options_dateFormat.revFiles');
+
+    var expectedConfigLog =
+      [
+        { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
+          dest: 'tmp/js/js_bundle_a.140924183734.js' },
+        { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
+          dest: 'tmp/js/js_bundle_b.140101010000.js' }
+      ];
+    test.deepEqual(configLog, expectedConfigLog, 'should respect the dateFormat passed as an option');
     test.done();
   },
 
