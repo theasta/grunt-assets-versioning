@@ -29,7 +29,9 @@ grunt.initConfig({
       // Task-specific options go here.
     },
     your_target: {
-      multitask: 'uglify'
+      options: {
+        multitask: 'uglify'
+      }
     },
   },
 })
@@ -65,8 +67,7 @@ Type: `Number`
 Default value: `0`
 
 Only works if you choose to version your files using a date.
-Only files older than the dateStart will be versioned.
-If set to true, all files will be versioned.
+Timezone offset (in hours) to take into account when generating the date version tag. By default, set to 0 (GMT time).
 
 #### options.hashLength
 Type: `Integer`
@@ -132,7 +133,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
-* 2014-09-26   v0.2.0   Travis Integration, options.timezoneOffset (default: 0 - UTC Time)
+* 2014-09-26   v0.2.0   Travis Integration, options.timezoneOffset (default: 0 - UTC Time)
 * 2013-06-30   v0.1.5   Update JSHint Configuration and fix warnings
 * 2013-06-30   v0.1.4   Make it work with the Compact format file mapping
 * 2013-06-02   v0.1.3   Fix dateFormat bug
