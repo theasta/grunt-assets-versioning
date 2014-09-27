@@ -42,13 +42,13 @@ grunt.initConfig({
 #### options.use
 Type: `String`
 Possible values: `date`, `hash`
-Default value: `date'
+Default value: `date`
 
 Should the revision marker be a md5 hash or a date ?
 
 #### options.dateFormat
 Type: `String`
-Default value: `YYYYMMDDHHmmss'
+Default value: `YYYYMMDDHHmmss`
 
 
 If you choose to version your files using a date, you can specify a
@@ -56,7 +56,7 @@ dateformat. grunt-assets-versioning is using moment.js to format date.
 
 #### options.dateStart
 Type: `Date` or `Boolean`
-Default value: `false'
+Default value: `false`
 
 Only works if you choose to version your files using a date.
 Only files older than the dateStart will be versioned.
@@ -71,14 +71,14 @@ Timezone offset (in hours) to take into account when generating the date version
 
 #### options.hashLength
 Type: `Integer`
-Default value: `8'
+Default value: `8`
 
 If you choose to version your files using a hash, hashLength let you set how
 long the hash is going to be.
 
 #### options.multitask
 Type: `String` or `Boolean`
-Default value: `false'
+Default value: `false`
 
 #### options.multitaskTarget
 Type: `String`
