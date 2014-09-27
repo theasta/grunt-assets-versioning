@@ -50,40 +50,47 @@ module.exports = function(grunt) {
     var surrogateTask;
     var surrogateTaskConfigKey;
     var taskConfig;
-    var taskConfigKey;
-    var isSurrogateTaskMode = !!options.multitask;
+    var targetTaskConfigKey = this.name + '.' + this.target;
+    var targetTask = this.name + ':' + this.target;
+    var isExternalTaskMode = !!options.multitask;
 
-    if (isSurrogateTaskMode) {
+    if (isExternalTaskMode) {
 
-      grunt.log.debug('Versioning files from another task.');
+      grunt.log.debug('External Task Mode');
 
-      taskConfigKey = options.multitask + '.' + options.multitaskTarget;
+      targetTaskConfigKey = options.multitask + '.' + options.multitaskTarget;
+      targetTask = options.multitask + ':' + options.multitaskTarget;
+      grunt.log.writeln("Versioning files from " + targetTask + " task.");
+
       surrogateTask = options.multitask + ':' + options.multitaskTarget + '_' + this.name;
-      surrogateTaskConfigKey = taskConfigKey + '_' + this.name;
+      surrogateTaskConfigKey = targetTaskConfigKey + '_' + this.name;
+      grunt.log.debug("Surrogate task: " + surrogateTask);
 
-      taskConfig = grunt.config.get(taskConfigKey);
+      taskConfig = grunt.config.get(targetTaskConfigKey);
 
       if (!taskConfig) {
-        grunt.fail.warn("Couldn't find configuration for the targeted task " + taskConfigKey, 1);
+        grunt.fail.warn("Task " + targetTask + " doesn't exist or doesn't have any configuration. It can't be versioned.", 1);
       }
 
       // In surrogate task mode, there should not be any 'files' property
       if (this.data.files != null) {
-        grunt.log.warn("Files passed directly to the task won't be processed. Instead processing files from " + taskConfigKey);
+        grunt.fail.warn("In external task mode, files passed directly to the assets_versioning task won't be processed. Instead, the task is going to version files from the target task: " + targetTask);
       }
 
-      // retrieve files from the targeted task
+      // retrieve files from the target task
       taskFiles = grunt.task.normalizeMultiTaskFiles(taskConfig, this.target);
 
     } else {
 
-      grunt.log.debug('Versioning files passed to this task directly.');
+      grunt.log.debug('Internal Task Mode');
+
+      grunt.log.debug("Versioning files passed directly to " + targetTask + " task.");
       taskFiles = this.files;
 
     }
 
     if (!taskFiles || taskFiles.length === 0) {
-      grunt.fail.warn("Couldn't find any file to process " + taskConfigKey, 1);
+      grunt.fail.warn("Task doesn't have any src-dest file mappings.", 1);
     }
 
     taskFiles.forEach(function(f) {
@@ -95,7 +102,7 @@ module.exports = function(grunt) {
       });
 
       if (src.length === 0) {
-        grunt.log.warn('src is an empty array');
+        grunt.log.error('src is an empty array');
         return false;
       }
 
@@ -138,7 +145,7 @@ module.exports = function(grunt) {
     grunt.config.set(this.name + '.' + this.target + '.revFiles', revFiles);
 
     // run surrogate task if defined
-    if (isSurrogateTaskMode) {
+    if (isExternalTaskMode) {
 
       // remove src & dest keys as they take precedence over the files key
       delete taskConfig.src;

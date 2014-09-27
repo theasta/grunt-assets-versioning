@@ -87,6 +87,18 @@ module.exports = function(grunt) {
           'tmp/js/default_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
           'tmp/js/default_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
+      },
+
+      fail_no_valid_files: {
+          'tmp/js/no_file/no_file.js': ['test/fixtures/js/file2.js']
+      },
+
+      fail_no_files: {},
+
+      fail_no_valid_external_task: {
+        options: {
+          multitask: 'dontexist'
+        }
       }
 
     },
