@@ -120,5 +120,24 @@ exports.assets_versioning = {
 
     test.done();
 
+  },
+
+  fails: function (test) {
+    test.expect(3);
+
+    test.throws(function () {
+      grunt.run.task('assets_versioning:fail_no_valid_files');
+    }, 'error', 'It should throw an error if no valid source files are passed.');
+
+    test.throws(function () {
+      grunt.run.task('assets_versioning:fail_no_valid_external_task');
+    }, 'error', 'It should throw an error if it is pointing to a non-existent external task.');
+
+    test.throws(function () {
+      grunt.run.task('assets_versioning:fail_no_files');
+    }, 'error', 'It should throw an error if no source files are defined');
+
+
+    test.done();
   }
 };
