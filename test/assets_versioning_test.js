@@ -24,21 +24,6 @@ exports.assets_versioning = {
     test.done();
   },
 
-  // It should exclude files that were created before the startDate options
-  date_options_startDate: function(test) {
-    test.expect(1);
-
-    var configLog = grunt.config.get('assets_versioning.date_options_startDate.revFiles');
-
-    var expectedConfigLog =
-      [
-        { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.20140925013734.js' }
-      ];
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
-    test.done();
-  },
-
   date_options_timezoneOffset: function(test) {
     test.expect(1);
 
@@ -78,10 +63,10 @@ exports.assets_versioning = {
     var configLog = grunt.config.get('assets_versioning.images_with_hash.revFiles');
 
     var expectedConfigLog = [
-        { src: ['test/fixtures/images/folder/subfolder/img3.png'], dest: 'tmp/images_with_hash/folder/subfolder/img3.f69ba99cdb.png' },
-        { src: ['test/fixtures/images/img1.png'], dest: 'tmp/images_with_hash/img1.0aab5fd0e5.png' },
-        { src: ['test/fixtures/images/img2.jpg'], dest: 'tmp/images_with_hash/img2.ec1bd0dedd.jpg' },
-        { src: ['test/fixtures/images/folder/img2.gif'], dest: 'tmp/images_with_hash/folder/img2.05953adc52.gif' }
+        { src: ['test/fixtures/images/folder/subfolder/img3.png'], dest: 'tmp/images_with_hash/folder/subfolder/img3.f69ba99c.png' },
+        { src: ['test/fixtures/images/img1.png'], dest: 'tmp/images_with_hash/img1.0aab5fd0.png' },
+        { src: ['test/fixtures/images/img2.jpg'], dest: 'tmp/images_with_hash/img2.ec1bd0de.jpg' },
+        { src: ['test/fixtures/images/folder/img2.gif'], dest: 'tmp/images_with_hash/folder/img2.05953adc.gif' }
     ];
 
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
@@ -93,24 +78,47 @@ exports.assets_versioning = {
     test.done();
   },
 
-  files_compact_format: function(test) {
+  surrogate_compact_format: function(test) {
     test.expect(3);
 
-    var configLog = grunt.config.get('assets_versioning.files_compact_format.revFiles');
+    var configLog = grunt.config.get('assets_versioning.surrogate_compact_format.revFiles');
 
     var expectedConfigLog = [
       {
         src: [ 'test/fixtures/js/file1.js',
           'test/fixtures/js/file2.js',
           'test/fixtures/js/file3.js' ],
-        dest: 'tmp/js/compact_format.906eac.js'
+        dest: 'tmp/js/compact_format.906eac86.js'
       }
     ];
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
 
     test.ok(!grunt.file.exists('tmp/js/compact_format.js'), 'should not create an un-versioned file');
-    test.ok(grunt.file.exists('tmp/js/compact_format.906eac.js'), 'should create a versioned file');
+    test.ok(grunt.file.exists('tmp/js/compact_format.906eac86.js'), 'should create a versioned file');
 
     test.done();
+  },
+
+  files_default_behaviour: function (test) {
+    test.expect(5);
+
+    var configLog = grunt.config.get('assets_versioning.files_default_behaviour.revFiles');
+
+    var expectedConfigLog = [
+        { src: [ 'test/fixtures/js/file1.js', 'test/fixtures/js/file2.js' ],
+          dest: 'tmp/js/default_a.3d04f375.js' },
+        { src: [ 'test/fixtures/js/file3.js', 'test/fixtures/js/file4.js' ],
+          dest: 'tmp/js/default_b.bfcf287e.js' }
+      ];
+    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+
+    test.ok(grunt.file.exists('tmp/js/default_a.3d04f375.js'), 'should create a versioned default_a bundle.');
+    test.ok(grunt.file.exists('tmp/js/default_b.bfcf287e.js'), 'should create a versioned default_b bundle.');
+
+    test.equal(grunt.file.read('tmp/js/default_a.3d04f375.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.equal(grunt.file.read('tmp/js/default_b.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+
+    test.done();
+
   }
 };

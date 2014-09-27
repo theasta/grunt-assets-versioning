@@ -42,9 +42,16 @@ grunt.initConfig({
 #### options.use
 Type: `String`
 Possible values: `date`, `hash`
-Default value: `date`
+Default value: `hash`
 
 Should the revision marker be a md5 hash or a date ?
+
+#### options.hashLength
+Type: `Integer`
+Default value: `8`
+
+If you choose to version your files using a hash, hashLength let you set how
+long the hash is going to be.
 
 #### options.dateFormat
 Type: `String`
@@ -54,27 +61,12 @@ Default value: `YYYYMMDDHHmmss`
 If you choose to version your files using a date, you can specify a
 dateformat. grunt-assets-versioning is using moment.js to format date.
 
-#### options.dateStart
-Type: `Date` or `Boolean`
-Default value: `false`
-
-Only works if you choose to version your files using a date.
-Only files older than the dateStart will be versioned.
-If set to true, all files will be versioned.
-
 #### options.timezoneOffset
 Type: `Number`
 Default value: `0`
 
 Only works if you choose to version your files using a date.
 Timezone offset (in hours) to take into account when generating the date version tag. By default, set to 0 (GMT time).
-
-#### options.hashLength
-Type: `Integer`
-Default value: `8`
-
-If you choose to version your files using a hash, hashLength let you set how
-long the hash is going to be.
 
 #### options.multitask
 Type: `String` or `Boolean`
@@ -86,10 +78,28 @@ Default value: The target name
 
 #### options.skipExisting
 Type: `Boolean`
-Default value: `false`
+Default value: `true`
 
 
 ### Usage Examples
+
+#### Versioning using a hash
+In this example, dest.bundle.js is going to be versioned with a hash. All sources files are going to be hashed and those hashes are also going to be hashed. The generated result should be
+dest/bundle.2j4h2kds.js
+
+```js
+grunt.initConfig({
+  assets_versioning: {
+    options: {
+      use: 'hash',
+      hashLength: 6,
+    },
+    files: {
+      'dest/bundle.js': ['src/file1.js', 'src/file2.js'],
+    },
+  },
+})
+```
 
 #### Versioning using a date
 In this example, dest.bundle.js is going to be versioned with a date, using
@@ -110,29 +120,12 @@ grunt.initConfig({
 })
 ```
 
-#### Versioning using a hash
-In this example, dest.bundle.js is going to be versioned with a hash. All sources files are going to be hashed and those hashes are also going to be hashed. The generated result should be
-dest/bundle.2j4h2k.js
-
-```js
-grunt.initConfig({
-  assets_versioning: {
-    options: {
-      use: 'hash',
-      hashLength: 6,
-    },
-    files: {
-      'dest/bundle.js': ['src/file1.js', 'src/file2.js'],
-    },
-  },
-})
-```
-
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
 
+* 2014-09-27   v0.3.0   Concatenate files if no surrogate task is passed. Changes in default options. Use hash instead of date. Skip versioning if destination file already exists.
 * 2014-09-26   v0.2.0   Travis Integration, options.timezoneOffset (default: 0 - UTC Time)
 * 2013-06-30   v0.1.5   Update JSHint Configuration and fix warnings
 * 2013-06-30   v0.1.4   Make it work with the Compact format file mapping

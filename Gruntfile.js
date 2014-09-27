@@ -33,19 +33,7 @@ module.exports = function(grunt) {
     assets_versioning: {
       date_several_sources: {
         options: {
-          use           : 'date',
-          multitask     : 'concat'
-        },
-        files: {
-          'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
-          'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
-        }
-      },
-      date_options_startDate: {
-        options: {
-          use           : 'date',
-          multitask     : 'concat',
-          dateStart     : new Date(1398573300000) //Sat Apr 26 2014 21:35:00 GMT-0700 (PDT)
+          use           : 'date'
         },
         files: {
           'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
@@ -56,7 +44,6 @@ module.exports = function(grunt) {
         options: {
           use           : 'date',
           dateFormat: 'YYMMDDHHmmss',
-          multitask     : 'concat',
           timezoneOffset: 7
         },
         files: {
@@ -67,7 +54,6 @@ module.exports = function(grunt) {
       date_options_timezoneOffset: {
         options: {
           use           : 'date',
-          multitask     : 'concat',
           timezoneOffset: 7
         },
         files: {
@@ -84,27 +70,29 @@ module.exports = function(grunt) {
         }],
         options: {
           use        : 'hash',
-          hashLength : 10,
           output     : 'tmp/images_with_hash.json'
         }
       },
-      files_compact_format: {
+      surrogate_compact_format: {
         options: {
-          use: 'hash',
-          hashLength: 6,
+          use:          'hash',
           multitask: 'concat'
+        }
+      },
+      files_default_behaviour: {
+        options: {
+          use:          'hash'
+        },
+        files: {
+          'tmp/js/default_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/default_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       }
 
     },
 
     concat: {
-      test1:{
-        files: {
-          'tmp/js/js_bundle.js': ['test/fixtures/js/**/*.js', '!test/fixtures/js/file3.js']
-        }
-      },
-      files_compact_format:{
+      surrogate_compact_format:{
         src: [
           'test/fixtures/js/file1.js',
           'test/fixtures/js/file2.js',
@@ -188,12 +176,12 @@ module.exports = function(grunt) {
     'clean',
     'startMocking',
     'assets_versioning:date_several_sources',
-    'assets_versioning:date_options_startDate',
     'assets_versioning:date_options_dateFormat',
     'assets_versioning:date_options_timezoneOffset',
     'stopMocking',
     'assets_versioning:images_with_hash',
-    'assets_versioning:files_compact_format',
+    'assets_versioning:surrogate_compact_format',
+    'assets_versioning:files_default_behaviour',
     'nodeunit']);
 
   // By default, lint and run all tests.
