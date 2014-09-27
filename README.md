@@ -60,6 +60,14 @@ Only works if you choose to version your files using a date.
 Only files older than the dateStart will be versioned.
 If set to true, all files will be versioned.
 
+#### options.timezoneOffset
+Type: `Number`
+Default value: `0`
+
+Only works if you choose to version your files using a date.
+Only files older than the dateStart will be versioned.
+If set to true, all files will be versioned.
+
 #### options.hashLength
 Type: `Integer`
 Default value: `8'
@@ -123,4 +131,11 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+
+* 2014-09-26   v0.2.0   Travis Integration, options.timezoneOffset (default: 0 - UTC Time)
+* 2013-06-30   v0.1.5   Update JSHint Configuration and fix warnings
+* 2013-06-30   v0.1.4   Make it work with the Compact format file mapping
+* 2013-06-02   v0.1.3   Fix dateFormat bug
+* 2013-06-02   v0.1.2   Minor bug fixes
+* 2013-05-01   v0.1.1   Add Surrogate tasks and documentation
+* 2013-04-26   v0.1.0   Initial commit

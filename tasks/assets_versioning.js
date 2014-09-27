@@ -25,6 +25,7 @@ module.exports = function(grunt) {
       encoding: 'utf8',
       dateStart: false,
       dateFormat: 'YYYYMMDDHHmmss',
+      timezoneOffset: 0,
       outputTrimDir: '',
       rename: function(destPath, rev) {
         return path.dirname(destPath) + path.sep + path.basename(destPath, path.extname(destPath)) + '.' + rev + path.extname(destPath);
@@ -72,7 +73,7 @@ module.exports = function(grunt) {
         var lastMtime = f.src.map(function(filepath){
           return +fs.statSync(filepath).mtime;
         }).sort().pop();
-        var lastMTimeFormatted = moment(lastMtime).zone('+0000').format(options.dateFormat);
+        var lastMTimeFormatted = moment(lastMtime).zone(options.timezoneOffset).format(options.dateFormat);
 
         rev = (!dateStartTime || dateStartTime < lastMtime) ? lastMTimeFormatted : '';
 
