@@ -1,4 +1,4 @@
-# grunt-assets-versioning [![Build Status](https://travis-ci.org/theasta/grunt-assets-versioning.svg?branch=master)](https://travis-ci.org/theasta/grunt-assets-versioning)
+# grunt-assets-versioning [![Build Status](https://travis-ci.org/theasta/grunt-assets-versioning.svg?branch=master)](https://travis-ci.org/theasta/grunt-assets-versioning) [![NPM version](https://badge.fury.io/js/grunt-assets-versioning.svg)](http://badge.fury.io/js/grunt-assets-versioning)
 
 > Versioning static assets with Grunt
 
