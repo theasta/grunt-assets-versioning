@@ -87,7 +87,7 @@ module.exports = function(grunt) {
         }
       },
       options_output: {
-        files:[{
+        files: [{
           expand : true,
           cwd    : "test/fixtures/images/",
           src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
         }
       },
       options_output_trim_dir: {
-        files:[{
+        files: [{
           expand : true,
           cwd    : "test/fixtures/images/",
           src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
@@ -109,15 +109,50 @@ module.exports = function(grunt) {
           outputTrimDir : 'tmp/options_output_trim/'
         }
       },
+      files_compact_format: {
+        src: [
+          'test/fixtures/js/file1.js',
+          'test/fixtures/js/file2.js',
+          'test/fixtures/js/file3.js'
+        ],
+        dest: 'tmp/js/files_compact_format.js'
+      },
+      files_object_format: {
+        files: {
+          'tmp/js/files_object_format_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/files_object_format_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
+      files_array_format: {
+        files: [
+          {src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/files_array_format_a.js'},
+          {src: ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'], dest: 'tmp/js/files_array_format_b.js'}
+        ]
+      },
       files_expand_format: {
-        files:[{
+        files: [{
           expand : true,
           cwd    : "test/fixtures/images/",
           src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
           dest   : "tmp/files_expand_format/"
         }]
       },
-      task_compact_format: {
+      task_files_compact_format: {
+        options: {
+          multitask: 'concat'
+        }
+      },
+      task_files_object_format: {
+        options: {
+          multitask: 'concat'
+        }
+      },
+      task_files_array_format: {
+        options: {
+          multitask: 'concat'
+        }
+      },
+      task_files_expand_format: {
         options: {
           multitask: 'concat'
         }
@@ -130,7 +165,7 @@ module.exports = function(grunt) {
       },
 
       fail_no_valid_files: {
-          'tmp/js/no_file/no_file.js': ['test/fixtures/js/file2.js']
+        'tmp/js/no_file/no_file.js': ['test/fixtures/js/file2.js']
       },
 
       fail_no_files: {},
@@ -139,19 +174,59 @@ module.exports = function(grunt) {
         options: {
           multitask: 'dontexist'
         }
+      },
+
+      fail_no_src: {
+        files: {
+          'tmp/js/whatever.js': ['test/fixtures/js/']
+        }
+      },
+
+      fail_no_dest: {
+        src: ['test/fixtures/js/file2.js']
+      },
+
+      fail_mix_files_task: {
+        options: {
+          multitask: 'concat'
+        },
+        files: {
+          'tmp/fail_mix_files_task.js':  'test/fixtures/js/file3.js'
+        }
       }
 
     },
 
     concat: {
-      task_compact_format:{
+      task_files_compact_format:{
         src: [
           'test/fixtures/js/file1.js',
           'test/fixtures/js/file2.js',
           'test/fixtures/js/file3.js'
         ],
-        dest: 'tmp/js/task_compact_format.js'
-      }
+        dest: 'tmp/js/task_files_compact_format.js'
+      },
+      task_files_object_format: {
+        files: {
+          'tmp/js/task_files_object_format_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/task_files_object_format_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
+      task_files_array_format: {
+        files: [
+          {src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/task_files_array_format_a.js'},
+          {src: ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'], dest: 'tmp/js/task_files_array_format_b.js'}
+        ]
+      },
+      task_files_expand_format: {
+        files: [{
+          expand : true,
+          cwd    : "test/fixtures/images/",
+          src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+          dest   : "tmp/task_files_expand_format/"
+        }]
+      },
+      fail_mix_files_task: {}
     },
 
     // Unit tests.
@@ -242,10 +317,25 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_false',
     'assets_versioning:options_output',
     'assets_versioning:options_output_trim_dir',
+    'assets_versioning:files_compact_format',
+    'assets_versioning:files_object_format',
+    'assets_versioning:files_array_format',
     'assets_versioning:files_expand_format',
-    'assets_versioning:task_compact_format',
+    'assets_versioning:task_files_compact_format',
+    'assets_versioning:task_files_object_format',
+    'assets_versioning:task_files_array_format',
+    'assets_versioning:task_files_expand_format',
     'assets_versioning:files_default_behaviour',
     'nodeunit']);
+
+  grunt.registerTask('fail', [
+    'assets_versioning:fail_no_src',
+    'assets_versioning:fail_no_dest',
+    'assets_versioning:fail_no_files',
+    'assets_versioning:fail_no_valid_files',
+    'assets_versioning:fail_mix_files_task',
+    'assets_versioning:fail_no_valid_external_task'
+  ]);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
