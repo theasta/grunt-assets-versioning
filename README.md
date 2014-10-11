@@ -126,6 +126,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2014-10-10   v0.3.1   Provide more feedback in debug mode. Improve unit tests coverage significantly.
 * 2014-09-27   v0.3.0   Concatenate files if no surrogate task is passed. Changes in default options. Use hash instead of date. Skip versioning if destination file already exists.
 * 2014-09-26   v0.2.0   Travis Integration, options.timezoneOffset (default: 0 - UTC Time)
 * 2013-06-30   v0.1.5   Update JSHint Configuration and fix warnings
