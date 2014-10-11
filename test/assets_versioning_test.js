@@ -8,10 +8,10 @@ exports.assets_versioning = {
     done();
   },
 
-  date_several_sources: function(test) {
+  options_tag_date: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.date_several_sources.revFiles');
+    var configLog = grunt.config.get('assets_versioning.options_tag_date.revFiles');
 
     var expectedConfigLog =
       [
@@ -24,10 +24,10 @@ exports.assets_versioning = {
     test.done();
   },
 
-  date_options_timezoneOffset: function(test) {
+  options_timezoneOffset: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.date_options_timezoneOffset.revFiles');
+    var configLog = grunt.config.get('assets_versioning.options_timezoneOffset.revFiles');
 
     var expectedConfigLog =
       [
@@ -41,10 +41,10 @@ exports.assets_versioning = {
   },
 
   // It should respect the dateFormat passed as an option
-  date_options_dateFormat: function(test) {
+  options_dateFormat: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.date_options_dateFormat.revFiles');
+    var configLog = grunt.config.get('assets_versioning.options_dateFormat.revFiles');
 
     var expectedConfigLog =
       [
@@ -57,44 +57,86 @@ exports.assets_versioning = {
     test.done();
   },
 
-  images_with_hash: function(test) {
+  // hash length should be as specified by options.hashLength
+  options_hashLength: function (test) {
     test.expect(2);
 
-    var configLog = grunt.config.get('assets_versioning.images_with_hash.revFiles');
-
-    var expectedConfigLog = [
-        { src: ['test/fixtures/images/folder/subfolder/img3.png'], dest: 'tmp/images_with_hash/folder/subfolder/img3.f69ba99c.png' },
-        { src: ['test/fixtures/images/img1.png'], dest: 'tmp/images_with_hash/img1.0aab5fd0.png' },
-        { src: ['test/fixtures/images/img2.jpg'], dest: 'tmp/images_with_hash/img2.ec1bd0de.jpg' },
-        { src: ['test/fixtures/images/folder/img2.gif'], dest: 'tmp/images_with_hash/folder/img2.05953adc.gif' }
-    ];
-
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
-
-    var actual = grunt.file.read('tmp/images_with_hash.json');
-    var expected = grunt.file.read('test/expected/output/images_with_hash.json');
-    test.deepEqual(JSON.parse(actual), JSON.parse(expected), 'should create a json file with proper data');
+    test.ok(grunt.file.exists('tmp/js/options_hashlength_a.3d04f3759854724f.js'), 'should create a versioned file with a 16 character long hash');
+    test.equal(grunt.file.read('tmp/js/options_hashlength_a.3d04f3759854724f.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
 
     test.done();
   },
 
-  surrogate_compact_format: function(test) {
+  // when skipExisting=true, don't run the task
+  options_skipExisting_true: function (test) {
+    test.expect(1);
+    test.equal(grunt.file.read('tmp/skip_existing_true.3d04f375.js'), grunt.file.read('test/expected/js/skip.js'));
+    test.done();
+  },
+
+  // when skipExisting=false, run the task anyway
+  options_skipExisting_false: function (test) {
+    test.expect(1);
+    test.notEqual(grunt.file.read('tmp/skip_existing_false.3d04f375.js'), grunt.file.read('test/expected/js/skip.js'));
+    test.done();
+  },
+
+  options_output: function (test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/options_output.json');
+    var expected = grunt.file.read('test/expected/output/options_output.json');
+    test.deepEqual(JSON.parse(actual), JSON.parse(expected), 'should create a json file with proper data');
+
+    test.done();
+
+  },
+
+  options_output_trim_dir: function (test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/options_output_trim.json');
+    var expected = grunt.file.read('test/expected/output/options_output_trim.json');
+    test.deepEqual(JSON.parse(actual), JSON.parse(expected), 'should create a json file with proper data');
+
+    test.done();
+
+  },
+
+  files_expand_format: function(test) {
+    test.expect(1);
+
+    var configLog = grunt.config.get('assets_versioning.files_expand_format.revFiles');
+
+    var expectedConfigLog = [
+        { src: ['test/fixtures/images/folder/subfolder/img3.png'], dest: 'tmp/files_expand_format/folder/subfolder/img3.f69ba99c.png' },
+        { src: ['test/fixtures/images/img1.png'], dest: 'tmp/files_expand_format/img1.0aab5fd0.png' },
+        { src: ['test/fixtures/images/img2.jpg'], dest: 'tmp/files_expand_format/img2.ec1bd0de.jpg' },
+        { src: ['test/fixtures/images/folder/img2.gif'], dest: 'tmp/files_expand_format/folder/img2.05953adc.gif' }
+    ];
+
+    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+
+    test.done();
+  },
+
+  task_compact_format: function(test) {
     test.expect(3);
 
-    var configLog = grunt.config.get('assets_versioning.surrogate_compact_format.revFiles');
+    var configLog = grunt.config.get('assets_versioning.task_compact_format.revFiles');
 
     var expectedConfigLog = [
       {
         src: [ 'test/fixtures/js/file1.js',
           'test/fixtures/js/file2.js',
           'test/fixtures/js/file3.js' ],
-        dest: 'tmp/js/compact_format.906eac86.js'
+        dest: 'tmp/js/task_compact_format.906eac86.js'
       }
     ];
     test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
 
-    test.ok(!grunt.file.exists('tmp/js/compact_format.js'), 'should not create an un-versioned file');
-    test.ok(grunt.file.exists('tmp/js/compact_format.906eac86.js'), 'should create a versioned file');
+    test.ok(!grunt.file.exists('tmp/js/task_compact_format.js'), 'should not create an un-versioned file');
+    test.ok(grunt.file.exists('tmp/js/task_compact_format.906eac86.js'), 'should create a versioned file');
 
     test.done();
   },

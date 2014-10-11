@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     assets_versioning: {
-      date_several_sources: {
+      options_tag_date: {
         options: {
           use           : 'date'
         },
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
           'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
         }
       },
-      date_options_dateFormat: {
+      options_dateFormat: {
         options: {
           use           : 'date',
           dateFormat: 'YYMMDDHHmmss',
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
           'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
         }
       },
-      date_options_timezoneOffset: {
+      options_timezoneOffset: {
         options: {
           use           : 'date',
           timezoneOffset: 7
@@ -61,28 +61,68 @@ module.exports = function(grunt) {
           'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
         }
       },
-      images_with_hash: {
+      options_hashLength: {
+        options: {
+          hashLength: 16
+        },
+        files: {
+          'tmp/js/options_hashlength_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/options_hashlength_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
+      options_skipExisting_true: {
+        options: {
+          skipExisting: true
+        },
+        files: {
+          'tmp/skip_existing_true.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js']
+        }
+      },
+      options_skipExisting_false: {
+        options: {
+          skipExisting: false
+        },
+        files: {
+          'tmp/skip_existing_false.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js']
+        }
+      },
+      options_output: {
         files:[{
           expand : true,
           cwd    : "test/fixtures/images/",
           src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
-          dest   : "tmp/images_with_hash/"
+          dest   : "tmp/options_output/"
         }],
         options: {
-          use        : 'hash',
-          output     : 'tmp/images_with_hash.json'
+          output     : 'tmp/options_output.json'
         }
       },
-      surrogate_compact_format: {
+      options_output_trim_dir: {
+        files:[{
+          expand : true,
+          cwd    : "test/fixtures/images/",
+          src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+          dest   : "tmp/options_output_trim/"
+        }],
         options: {
-          use:          'hash',
+          output     : 'tmp/options_output_trim.json',
+          outputTrimDir : 'tmp/options_output_trim/'
+        }
+      },
+      files_expand_format: {
+        files:[{
+          expand : true,
+          cwd    : "test/fixtures/images/",
+          src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+          dest   : "tmp/files_expand_format/"
+        }]
+      },
+      task_compact_format: {
+        options: {
           multitask: 'concat'
         }
       },
       files_default_behaviour: {
-        options: {
-          use:          'hash'
-        },
         files: {
           'tmp/js/default_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
           'tmp/js/default_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
@@ -104,14 +144,13 @@ module.exports = function(grunt) {
     },
 
     concat: {
-      surrogate_compact_format:{
+      task_compact_format:{
         src: [
           'test/fixtures/js/file1.js',
           'test/fixtures/js/file2.js',
           'test/fixtures/js/file3.js'
         ],
-        filter: 'isFile',
-        dest: 'tmp/js/compact_format.js'
+        dest: 'tmp/js/task_compact_format.js'
       }
     },
 
@@ -182,17 +221,29 @@ module.exports = function(grunt) {
     mock.restore();
     grunt.file.glob.sync = _fileGlobSync;
   });
+
+  grunt.registerTask('prepareSkipExistingTest', function () {
+    grunt.file.copy('test/expected/js/skip.js', 'tmp/skip_existing_true.3d04f375.js');
+    grunt.file.copy('test/expected/js/skip.js', 'tmp/skip_existing_false.3d04f375.js');
+  });
+
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
   grunt.registerTask('test', [
     'clean',
     'startMocking',
-    'assets_versioning:date_several_sources',
-    'assets_versioning:date_options_dateFormat',
-    'assets_versioning:date_options_timezoneOffset',
+    'assets_versioning:options_tag_date',
+    'assets_versioning:options_dateFormat',
+    'assets_versioning:options_timezoneOffset',
     'stopMocking',
-    'assets_versioning:images_with_hash',
-    'assets_versioning:surrogate_compact_format',
+    'assets_versioning:options_hashLength',
+    'prepareSkipExistingTest',
+    'assets_versioning:options_skipExisting_true',
+    'assets_versioning:options_skipExisting_false',
+    'assets_versioning:options_output',
+    'assets_versioning:options_output_trim_dir',
+    'assets_versioning:files_expand_format',
+    'assets_versioning:task_compact_format',
     'assets_versioning:files_default_behaviour',
     'nodeunit']);
 
