@@ -93,7 +93,9 @@ module.exports = function(grunt) {
       grunt.fail.warn("Task '" + targetTask + "' doesn't have any src-dest file mappings.", 1);
     }
 
-    taskFiles.forEach(function(f) {
+    taskFiles.forEach(function(f, index) {
+
+      grunt.log.debug("Iterating through file mapping - " + (index+1) + "/" + taskFiles.length);
 
       var rev;
       var destFilePath;
@@ -101,6 +103,7 @@ module.exports = function(grunt) {
         return grunt.file.isFile(file);
       });
 
+      grunt.log.debug('Source files: ', src);
       if (src.length === 0) {
         grunt.fail.warn("Task '" + targetTask + "' has no source files.");
         grunt.log.debug(JSON.stringify(f.orig));
@@ -114,7 +117,7 @@ module.exports = function(grunt) {
       }
 
       rev = getVersionProcessor(options.use)(src, options);
-      grunt.log.debug('Version tag: ' + rev);
+      grunt.log.debug('Version tag (' + options.use + '): ' + rev);
 
       if (rev === '') {
         grunt.fail.warn("Failed at generating a version tag for " + f.dest, 1);
@@ -122,7 +125,7 @@ module.exports = function(grunt) {
       }
 
       destFilePath = options.rename.call(this, f.dest, rev);
-      grunt.log.debug('Destination filename: ' + rev);
+      grunt.log.debug('Destination filename: ' + destFilePath);
 
       if (options.output) {
         output.push({
@@ -136,8 +139,10 @@ module.exports = function(grunt) {
       if (options.skipExisting === true) {
         grunt.log.debug('options.skipExisting is true, checking if destination file already exists.');
         if (grunt.file.exists(destFilePath)) {
+          grunt.log.debug('Destination file already exists. Task skipped.');
           return false;
         }
+        grunt.log.debug("Destination file doesn't exist. Task will be processed.");
       }
 
       // log the src and dest data
@@ -147,9 +152,11 @@ module.exports = function(grunt) {
 
     if (options.output) {
       grunt.file.write(options.output, JSON.stringify(output));
+      grunt.log.debug("Output content: ", output);
     }
 
     grunt.config.set(this.name + '.' + this.target + '.revFiles', revFiles);
+    grunt.log.debug("Version file mapping: ", revFiles);
 
     // run surrogate task if defined
     if (isExternalTaskMode) {
@@ -159,8 +166,11 @@ module.exports = function(grunt) {
       delete taskConfig.dest;
       taskConfig.files = revFiles;
       grunt.config.set(surrogateTaskConfigKey, taskConfig);
+      grunt.log.debug("Created surrogateTask 'surrogateTaskConfigKey'");
+      grunt.log.debug(taskConfig);
 
       if (options.runTask) {
+        grunt.verbose.writeln("Trigger task '" + surrogateTask + "'");
         grunt.task.run(surrogateTask);
       }
 
