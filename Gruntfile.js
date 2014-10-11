@@ -139,6 +139,25 @@ module.exports = function(grunt) {
         options: {
           multitask: 'dontexist'
         }
+      },
+
+      fail_no_src: {
+        files: {
+          'tmp/js/whatever.js': ['test/fixtures/js/']
+        }
+      },
+
+      fail_no_dest: {
+        src: ['test/fixtures/js/file2.js']
+      },
+
+      fail_mix_files_task: {
+        options: {
+          multitask: 'concat'
+        },
+        files: {
+          'tmp/fail_mix_files_task.js':  'test/fixtures/js/file3.js'
+        }
       }
 
     },
@@ -151,7 +170,8 @@ module.exports = function(grunt) {
           'test/fixtures/js/file3.js'
         ],
         dest: 'tmp/js/task_compact_format.js'
-      }
+      },
+      fail_mix_files_task: {}
     },
 
     // Unit tests.
@@ -246,6 +266,15 @@ module.exports = function(grunt) {
     'assets_versioning:task_compact_format',
     'assets_versioning:files_default_behaviour',
     'nodeunit']);
+
+  grunt.registerTask('fail', [
+    'assets_versioning:fail_no_src',
+    'assets_versioning:fail_no_dest',
+    'assets_versioning:fail_no_files',
+    'assets_versioning:fail_no_valid_files',
+    'assets_versioning:fail_mix_files_task',
+    'assets_versioning:fail_no_valid_external_task'
+  ]);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);

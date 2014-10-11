@@ -69,12 +69,12 @@ module.exports = function(grunt) {
       taskConfig = grunt.config.get(targetTaskConfigKey);
 
       if (!taskConfig) {
-        grunt.fail.warn("Task " + targetTask + " doesn't exist or doesn't have any configuration. It can't be versioned.", 1);
+        grunt.fail.warn("Task '" + targetTask + "' doesn't exist or doesn't have any configuration.", 1);
       }
 
       // In surrogate task mode, there should not be any 'files' property
       if (this.data.files != null) {
-        grunt.fail.warn("In external task mode, files passed directly to the assets_versioning task won't be processed. Instead, the task is going to version files from the target task: " + targetTask);
+        grunt.log.error("In external task mode, files passed directly to the assets_versioning task won't be processed. Instead, the task is going to version files from the target task: '" + targetTask + "'");
       }
 
       // retrieve files from the target task
@@ -84,13 +84,13 @@ module.exports = function(grunt) {
 
       grunt.log.debug('Internal Task Mode');
 
-      grunt.log.debug("Versioning files passed directly to " + targetTask + " task.");
+      grunt.log.debug("Versioning files passed directly to '" + targetTask + "' task.");
       taskFiles = this.files;
 
     }
 
     if (!taskFiles || taskFiles.length === 0) {
-      grunt.fail.warn("Task doesn't have any src-dest file mappings.", 1);
+      grunt.fail.warn("Task '" + targetTask + "' doesn't have any src-dest file mappings.", 1);
     }
 
     taskFiles.forEach(function(f) {
@@ -102,8 +102,15 @@ module.exports = function(grunt) {
       });
 
       if (src.length === 0) {
-        grunt.log.error('src is an empty array');
+        grunt.fail.warn("Task '" + targetTask + "' has no source files.");
+        grunt.log.debug(JSON.stringify(f.orig));
         return false;
+      }
+
+      if (typeof f.dest !== 'string') {
+        grunt.log.error("Task '" + targetTask + "' has no destination file.");
+        grunt.log.debug(JSON.stringify(f.orig));
+        return;
       }
 
       rev = getVersionProcessor(options.use)(src, options);
