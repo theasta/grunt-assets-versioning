@@ -19,6 +19,10 @@ module.exports = function(grunt) {
     return require('./processors/' + type);
   };
 
+  var getTaskConfigKey = function (taskName) {
+    return taskName.replace(':', '.');
+  };
+
   grunt.registerMultiTask('assets_versioning', 'Version static assets', function() {
 
     var done = this.async();
@@ -37,6 +41,7 @@ module.exports = function(grunt) {
       skipExisting: true,
       multitask: false,
       multitaskTarget: this.target,
+      tasks: false,
       runTask: true
     });
 
@@ -52,17 +57,26 @@ module.exports = function(grunt) {
     var taskConfig;
     var targetTaskConfigKey = this.name + '.' + this.target;
     var targetTask = this.name + ':' + this.target;
-    var isExternalTaskMode = !!options.multitask;
+    var isExternalTaskMode = !!options.multitask || Array.isArray(options.tasks);
 
     if (isExternalTaskMode) {
 
       grunt.log.debug('External Task Mode');
 
-      targetTaskConfigKey = options.multitask + '.' + options.multitaskTarget;
-      targetTask = options.multitask + ':' + options.multitaskTarget;
+      if (!!options.multitask) {
+        options.tasks = [options.multitask + ':' + options.multitaskTarget]
+      }
+
+      if (options.tasks.length !== 1) {
+        grunt.fail.fatal("grunt-assets-versioning v0.5.0 can only version one external task at a time. Aborting");
+      }
+
+      targetTask = options.tasks[0];
+
+      targetTaskConfigKey = getTaskConfigKey(targetTask);
       grunt.log.writeln("Versioning files from " + targetTask + " task.");
 
-      surrogateTask = options.multitask + ':' + options.multitaskTarget + '_' + this.name;
+      surrogateTask = targetTask + '_' + this.name;
       surrogateTaskConfigKey = targetTaskConfigKey + '_' + this.name;
       grunt.log.debug("Surrogate task: " + surrogateTask);
 

@@ -95,6 +95,17 @@ module.exports = function(grunt) {
           'tmp/js/skip_existing_array_2.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       },
+      options_multitask: {
+        options: {
+          multitask: 'concat'
+        }
+      },
+      options_multitaskTarget: {
+        options: {
+          multitask: 'concat',
+          multitaskTarget: 'options_multitaskTarget_subtask'
+        }
+      },
       options_output: {
         files: [{
           expand : true,
@@ -148,22 +159,22 @@ module.exports = function(grunt) {
       },
       task_files_compact_format: {
         options: {
-          multitask: 'concat'
+          tasks: ['concat:task_files_compact_format']
         }
       },
       task_files_object_format: {
         options: {
-          multitask: 'concat'
+          tasks: ['concat:task_files_object_format']
         }
       },
       task_files_array_format: {
         options: {
-          multitask: 'concat'
+          tasks: ['concat:task_files_array_format']
         }
       },
       task_files_expand_format: {
         options: {
-          multitask: 'concat'
+          tasks: ['concat:task_files_expand_format']
         }
       },
       files_default_behaviour: {
@@ -181,7 +192,7 @@ module.exports = function(grunt) {
 
       fail_no_valid_external_task: {
         options: {
-          multitask: 'dontexist'
+          task: ['dontexist']
         }
       },
 
@@ -197,7 +208,7 @@ module.exports = function(grunt) {
 
       fail_mix_files_task: {
         options: {
-          multitask: 'concat'
+          tasks: ['concat:fail_mix_files_task']
         },
         files: {
           'tmp/fail_mix_files_task.js':  'test/fixtures/js/file3.js'
@@ -235,7 +246,19 @@ module.exports = function(grunt) {
           dest   : "tmp/task_files_expand_format/"
         }]
       },
-      fail_mix_files_task: {}
+      fail_mix_files_task: {},
+      options_multitask: {
+        files: {
+          'tmp/js/options_multitask_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/options_multitask_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
+      options_multitaskTarget_subtask: {
+        files: {
+          'tmp/js/options_multitaskTarget_subtask_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/options_multitaskTarget_subtask_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      }
     },
 
     // Unit tests.
@@ -326,6 +349,8 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_true',
     'assets_versioning:options_skipExisting_false',
     'assets_versioning:options_skipExisting_array',
+    'assets_versioning:options_multitask',
+    'assets_versioning:options_multitaskTarget',
     'assets_versioning:options_output',
     'assets_versioning:options_output_trim_dir',
     'assets_versioning:files_compact_format',

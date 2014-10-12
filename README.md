@@ -31,12 +31,14 @@ grunt.initConfig({
     },
     your_target: {
       options: {
-        multitask: 'uglify'
+        tasks: ['uglify:targetTask']
       }
     },
   },
 })
 ```
+
+This task will version the files output by the task uglify:targetTask.
 
 ### Options
 
@@ -69,13 +71,10 @@ Default value: `0`
 Only works if you choose to version your files using a date.
 Timezone offset (in hours) to take into account when generating the date version tag. By default, set to 0 (GMT time).
 
-#### options.multitask
+#### options.tasks
 Type: `String` or `Boolean`
 Default value: `false`
-
-#### options.multitaskTarget
-Type: `String`
-Default value: The target name
+The task you want to run while versioning the output
 
 #### options.skipExisting
 Type: `Boolean` or `Array`
