@@ -117,6 +117,34 @@ exports.assets_versioning = {
 
   },
 
+  options_multitask: function (test) {
+    test.expect(4);
+
+    var configLog = grunt.config.get('assets_versioning.options_multitask.revFiles');
+
+    test.ok(grunt.file.exists('tmp/js/options_multitask_a.3d04f375.js'), 'should create a versioned a bundle.');
+    test.ok(grunt.file.exists('tmp/js/options_multitask_b.bfcf287e.js'), 'should create a versioned b bundle.');
+
+    test.equal(grunt.file.read('tmp/js/options_multitask_a.3d04f375.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.equal(grunt.file.read('tmp/js/options_multitask_b.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+
+    test.done();
+  },
+
+  options_multitaskTarget: function (test) {
+    test.expect(4);
+
+    var configLog = grunt.config.get('assets_versioning.options_multitaskTarget.revFiles');
+
+    test.ok(grunt.file.exists('tmp/js/options_multitaskTarget_subtask_a.3d04f375.js'), 'should create a versioned a bundle.');
+    test.ok(grunt.file.exists('tmp/js/options_multitaskTarget_subtask_b.bfcf287e.js'), 'should create a versioned b bundle.');
+
+    test.equal(grunt.file.read('tmp/js/options_multitaskTarget_subtask_a.3d04f375.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.equal(grunt.file.read('tmp/js/options_multitaskTarget_subtask_b.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+
+    test.done();
+  },
+
   files_compact_format: function(test) {
     test.expect(3);
 
