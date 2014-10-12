@@ -86,6 +86,15 @@ module.exports = function(grunt) {
           'tmp/skip_existing_false.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js']
         }
       },
+      options_skipExisting_array: {
+        options: {
+          skipExisting: ['tmp/js/skip_existing_array_1.3d04f375.js']
+        },
+        files: {
+          'tmp/js/skip_existing_array_1.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/skip_existing_array_2.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
       options_output: {
         files: [{
           expand : true,
@@ -299,6 +308,8 @@ module.exports = function(grunt) {
   grunt.registerTask('prepareSkipExistingTest', function () {
     grunt.file.copy('test/expected/js/skip.js', 'tmp/skip_existing_true.3d04f375.js');
     grunt.file.copy('test/expected/js/skip.js', 'tmp/skip_existing_false.3d04f375.js');
+    grunt.file.copy('test/expected/js/skip.js', 'tmp/js/skip_existing_array_1.3d04f375.js');
+    grunt.file.copy('test/expected/js/skip.js', 'tmp/js/skip_existing_array_2.bfcf287e.js');
   });
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
@@ -314,6 +325,7 @@ module.exports = function(grunt) {
     'prepareSkipExistingTest',
     'assets_versioning:options_skipExisting_true',
     'assets_versioning:options_skipExisting_false',
+    'assets_versioning:options_skipExisting_array',
     'assets_versioning:options_output',
     'assets_versioning:options_output_trim_dir',
     'assets_versioning:files_compact_format',

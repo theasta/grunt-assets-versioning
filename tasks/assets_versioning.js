@@ -143,6 +143,12 @@ module.exports = function(grunt) {
           return false;
         }
         grunt.log.debug("Destination file doesn't exist. Task will be processed.");
+      } else if (Array.isArray(options.skipExisting)) {
+        if (options.skipExisting.indexOf(destFilePath) !== -1) {
+          grunt.log.debug('Destination file listed in options.skipExisting. Task skipped');
+          return false;
+        }
+        grunt.log.debug("Destination file not list in options.skipExisting. Task will be processed.");
       }
 
       // log the src and dest data
