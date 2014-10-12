@@ -81,6 +81,20 @@ exports.assets_versioning = {
     test.done();
   },
 
+  // when skipExisting=[], run the task if the file is not already part of that array
+  options_skipExisting_array: function (test) {
+    test.expect(4);
+
+    // skip_existing_array_1 should have been skipped
+    test.notEqual(grunt.file.read('tmp/js/skip_existing_array_1.3d04f375.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.equal(grunt.file.read('tmp/js/skip_existing_array_1.3d04f375.js'), grunt.file.read('test/expected/js/skip.js'));
+
+    // skip_
+    test.notEqual(grunt.file.read('tmp/js/skip_existing_array_2.bfcf287e.js'), grunt.file.read('test/expected/js/skip.js'));
+    test.equal(grunt.file.read('tmp/js/skip_existing_array_2.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+    test.done();
+  },
+
   options_output: function (test) {
     test.expect(1);
 

@@ -78,9 +78,10 @@ Type: `String`
 Default value: The target name
 
 #### options.skipExisting
-Type: `Boolean`
+Type: `Boolean` or `Array`
 Default value: `true`
-
+If true, will skip the task if the destination file already exists.
+If type Array, will skip the task if the destination file, once versioned, is listed in the array.
 
 ### Usage Examples
 
@@ -126,6 +127,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2014-10-11   v0.4.0   skip task by providing an array of destination files to ignore.
 * 2014-10-10   v0.3.1   Provide more feedback in debug mode. Improve unit tests coverage significantly.
 * 2014-09-27   v0.3.0   Concatenate files if no surrogate task is passed. Changes in default options. Use hash instead of date. Skip versioning if destination file already exists.
 * 2014-09-26   v0.2.0   Travis Integration, options.timezoneOffset (default: 0 - UTC Time)
