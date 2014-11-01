@@ -60,7 +60,6 @@ long the hash is going to be.
 Type: `String`
 Default value: `YYYYMMDDHHmmss`
 
-
 If you choose to version your files using a date, you can specify a
 dateformat. grunt-assets-versioning is using moment.js to format date.
 
@@ -74,11 +73,13 @@ Timezone offset (in hours) to take into account when generating the date version
 #### options.tasks
 Type: `String` or `Boolean`
 Default value: `false`
-The task you want to run while versioning the output
+
+The task you want to run while versioning the output.
 
 #### options.skipExisting
 Type: `Boolean` or `Array`
-Default value: `true`
+Default value: `false`
+
 If true, will skip the task if the destination file already exists.
 If type Array, will skip the task if the destination file, once versioned, is listed in the array.
 

@@ -38,7 +38,7 @@ module.exports = function(grunt) {
         return path.dirname(destPath) + path.sep + path.basename(destPath, path.extname(destPath)) + '.' + version + path.extname(destPath);
       },
       output: null,
-      skipExisting: true,
+      skipExisting: false,
       multitask: false,
       multitaskTarget: this.target,
       tasks: false,
