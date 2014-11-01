@@ -11,32 +11,26 @@ exports.assets_versioning = {
   options_tag_date: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.options_tag_date.revFiles');
+    var versionsMap = grunt.config.get('assets_versioning.options_tag_date.versionsMap');
+    var expectedVersionsMap = [
+      { version: '20140925013734', originalPath: 'tmp/js/js_bundle_a.js', versionedPath: 'tmp/js/js_bundle_a.20140925013734.js'},
+      { version: '20140101080000', originalPath: 'tmp/js/js_bundle_b.js', versionedPath: 'tmp/js/js_bundle_b.20140101080000.js'}
+    ];
 
-    var expectedConfigLog =
-      [
-        { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.20140925013734.js' },
-        { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
-          dest: 'tmp/js/js_bundle_b.20140101080000.js' }
-      ];
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    test.deepEqual(versionsMap, expectedVersionsMap, 'should create a map of versions with all versioned files');
     test.done();
   },
 
   options_timezoneOffset: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.options_timezoneOffset.revFiles');
+    var versionsMap = grunt.config.get('assets_versioning.options_timezoneOffset.versionsMap');
+    var expectedVersionsMap = [
+      { version: '20140924183734', originalPath: 'tmp/js/js_bundle_a.js', versionedPath: 'tmp/js/js_bundle_a.20140924183734.js'},
+      { version: '20140101010000', originalPath: 'tmp/js/js_bundle_b.js', versionedPath: 'tmp/js/js_bundle_b.20140101010000.js'}
+    ];
+    test.deepEqual(versionsMap, expectedVersionsMap, 'should create a map of versions with all versioned files');
 
-    var expectedConfigLog =
-      [
-        { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.20140924183734.js' },
-        { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
-          dest: 'tmp/js/js_bundle_b.20140101010000.js' }
-      ];
-    test.deepEqual(configLog, expectedConfigLog, 'Should set a date version tag with a 7 hours offset');
     test.done();
   },
 
@@ -44,16 +38,13 @@ exports.assets_versioning = {
   options_dateFormat: function(test) {
     test.expect(1);
 
-    var configLog = grunt.config.get('assets_versioning.options_dateFormat.revFiles');
+    var versionsMap = grunt.config.get('assets_versioning.options_dateFormat.versionsMap');
+    var expectedVersionsMap = [
+      { version: '140924183734', originalPath: 'tmp/js/js_bundle_a.js', versionedPath: 'tmp/js/js_bundle_a.140924183734.js'},
+      { version: '140101010000', originalPath: 'tmp/js/js_bundle_b.js', versionedPath: 'tmp/js/js_bundle_b.140101010000.js'}
+    ];
+    test.deepEqual(versionsMap, expectedVersionsMap, 'should create a map of versions that respects the dateFormat passed as an option');
 
-    var expectedConfigLog =
-      [
-        { src: [ 'test/fake/file1.js', 'test/fake/file2.js' ],
-          dest: 'tmp/js/js_bundle_a.140924183734.js' },
-        { src: [ 'test/fake/file3.js', 'test/fake/file4.js' ],
-          dest: 'tmp/js/js_bundle_b.140101010000.js' }
-      ];
-    test.deepEqual(configLog, expectedConfigLog, 'should respect the dateFormat passed as an option');
     test.done();
   },
 
@@ -95,7 +86,7 @@ exports.assets_versioning = {
     test.done();
   },
 
-  options_output: function (test) {
+  options_versionsMapFile: function (test) {
     test.expect(1);
 
     var actual = grunt.file.read('tmp/options_output.json');
@@ -120,8 +111,6 @@ exports.assets_versioning = {
   options_multitask: function (test) {
     test.expect(4);
 
-    var configLog = grunt.config.get('assets_versioning.options_multitask.revFiles');
-
     test.ok(grunt.file.exists('tmp/js/options_multitask_a.3d04f375.js'), 'should create a versioned a bundle.');
     test.ok(grunt.file.exists('tmp/js/options_multitask_b.bfcf287e.js'), 'should create a versioned b bundle.');
 
@@ -134,8 +123,6 @@ exports.assets_versioning = {
   options_multitaskTarget: function (test) {
     test.expect(4);
 
-    var configLog = grunt.config.get('assets_versioning.options_multitaskTarget.revFiles');
-
     test.ok(grunt.file.exists('tmp/js/options_multitaskTarget_subtask_a.3d04f375.js'), 'should create a versioned a bundle.');
     test.ok(grunt.file.exists('tmp/js/options_multitaskTarget_subtask_b.bfcf287e.js'), 'should create a versioned b bundle.');
 
@@ -146,21 +133,7 @@ exports.assets_versioning = {
   },
 
   files_compact_format: function(test) {
-    test.expect(3);
-
-    var configLog = grunt.config.get('assets_versioning.files_compact_format.revFiles');
-
-    var expectedConfigLog = [
-      {
-        src: [
-          'test/fixtures/js/file1.js',
-          'test/fixtures/js/file2.js',
-          'test/fixtures/js/file3.js'
-        ],
-        dest: 'tmp/js/files_compact_format.906eac86.js'
-      }
-    ];
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    test.expect(2);
 
     test.ok(!grunt.file.exists('tmp/js/files_compact_format.js'), 'should not create an un-versioned file');
     test.ok(grunt.file.exists('tmp/js/files_compact_format.906eac86.js'), 'should create a versioned file');
@@ -170,8 +143,6 @@ exports.assets_versioning = {
 
   files_object_format: function(test) {
     test.expect(4);
-
-    var configLog = grunt.config.get('assets_versioning.files_object_format.revFiles');
 
     test.ok(grunt.file.exists('tmp/js/files_object_format_a.3d04f375.js'), 'should create a versioned a bundle.');
     test.ok(grunt.file.exists('tmp/js/files_object_format_b.bfcf287e.js'), 'should create a versioned b bundle.');
@@ -185,8 +156,6 @@ exports.assets_versioning = {
   files_array_format: function(test) {
     test.expect(4);
 
-    var configLog = grunt.config.get('assets_versioning.files_array_format.revFiles');
-
     test.ok(grunt.file.exists('tmp/js/files_object_format_a.3d04f375.js'), 'should create a versioned default_a bundle.');
     test.ok(grunt.file.exists('tmp/js/files_object_format_b.bfcf287e.js'), 'should create a versioned default_b bundle.');
 
@@ -199,16 +168,8 @@ exports.assets_versioning = {
   files_expand_format: function(test) {
     test.expect(9);
 
-    var configLog = grunt.config.get('assets_versioning.files_expand_format.revFiles');
-
-    var expectedConfigLog = [
-        { src: ['test/fixtures/images/folder/subfolder/img3.png'], dest: 'tmp/files_expand_format/folder/subfolder/img3.f69ba99c.png' },
-        { src: ['test/fixtures/images/img1.png'], dest: 'tmp/files_expand_format/img1.0aab5fd0.png' },
-        { src: ['test/fixtures/images/img2.jpg'], dest: 'tmp/files_expand_format/img2.ec1bd0de.jpg' },
-        { src: ['test/fixtures/images/folder/img2.gif'], dest: 'tmp/files_expand_format/folder/img2.05953adc.gif' }
-    ];
-
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    var versionsMap = grunt.config.get('assets_versioning.files_expand_format.versionsMap');
+    test.equal(versionsMap.length, 4, 'map of versions should contain 4 entities');
 
     test.ok(!grunt.file.exists('tmp/files_expand_format/folder/subfolder/img3.png'), 'should not create an un-versioned img3.png');
     test.ok(grunt.file.exists('tmp/files_expand_format/folder/subfolder/img3.f69ba99c.png'), 'should create a versioned img3.png');
@@ -229,19 +190,13 @@ exports.assets_versioning = {
   task_files_compact_format: function(test) {
     test.expect(3);
 
-    var configLog = grunt.config.get('assets_versioning.task_files_compact_format.revFiles');
-
-    var expectedConfigLog = [
+    var versionsMap = grunt.config.get('assets_versioning.task_files_compact_format.versionsMap');
+    var expectedVersionsMap = [
       {
-        src: [
-          'test/fixtures/js/file1.js',
-          'test/fixtures/js/file2.js',
-          'test/fixtures/js/file3.js'
-        ],
-        dest: 'tmp/js/task_files_compact_format.906eac86.js'
+        version: '906eac86', versionedPath: 'tmp/js/task_files_compact_format.906eac86.js', originalPath: 'tmp/js/task_files_compact_format.js'
       }
     ];
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    test.deepEqual(versionsMap, expectedVersionsMap, 'should set a config object listing all files');
 
     test.ok(!grunt.file.exists('tmp/js/task_files_compact_format.js'), 'should not create an un-versioned file');
     test.ok(grunt.file.exists('tmp/js/task_files_compact_format.906eac86.js'), 'should create a versioned file');
@@ -251,8 +206,6 @@ exports.assets_versioning = {
 
   task_files_object_format: function(test) {
     test.expect(4);
-
-    var configLog = grunt.config.get('assets_versioning.task_files_object_format.revFiles');
 
     test.ok(grunt.file.exists('tmp/js/task_files_object_format_a.3d04f375.js'), 'should create a versioned a bundle.');
     test.ok(grunt.file.exists('tmp/js/task_files_object_format_b.bfcf287e.js'), 'should create a versioned b bundle.');
@@ -266,8 +219,6 @@ exports.assets_versioning = {
   task_files_array_format: function(test) {
     test.expect(4);
 
-    var configLog = grunt.config.get('assets_versioning.task_files_array_format.revFiles');
-
     test.ok(grunt.file.exists('tmp/js/task_files_array_format_a.3d04f375.js'), 'should create a versioned a bundle.');
     test.ok(grunt.file.exists('tmp/js/task_files_array_format_b.bfcf287e.js'), 'should create a versioned b bundle.');
 
@@ -280,16 +231,8 @@ exports.assets_versioning = {
   task_files_expand_format: function(test) {
     test.expect(9);
 
-    var configLog = grunt.config.get('assets_versioning.task_files_expand_format.revFiles');
-
-    var expectedConfigLog = [
-      { src: ['test/fixtures/images/folder/subfolder/img3.png'], dest: 'tmp/task_files_expand_format/folder/subfolder/img3.f69ba99c.png' },
-      { src: ['test/fixtures/images/img1.png'], dest: 'tmp/task_files_expand_format/img1.0aab5fd0.png' },
-      { src: ['test/fixtures/images/img2.jpg'], dest: 'tmp/task_files_expand_format/img2.ec1bd0de.jpg' },
-      { src: ['test/fixtures/images/folder/img2.gif'], dest: 'tmp/task_files_expand_format/folder/img2.05953adc.gif' }
-    ];
-
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    var versionsMap = grunt.config.get('assets_versioning.task_files_expand_format.versionsMap');
+    test.equal(versionsMap.length, 4, 'map of versions should contain 4 entities');
 
     test.ok(!grunt.file.exists('tmp/task_files_expand_format/folder/subfolder/img3.png'), 'should not create an un-versioned img3.png');
     test.ok(grunt.file.exists('tmp/task_files_expand_format/folder/subfolder/img3.f69ba99c.png'), 'should create a versioned img3.png');
@@ -309,15 +252,20 @@ exports.assets_versioning = {
   files_default_behaviour: function (test) {
     test.expect(5);
 
-    var configLog = grunt.config.get('assets_versioning.files_default_behaviour.revFiles');
+    var versionsMap = grunt.config.get('assets_versioning.files_default_behaviour.versionsMap');
 
-    var expectedConfigLog = [
-        { src: [ 'test/fixtures/js/file1.js', 'test/fixtures/js/file2.js' ],
-          dest: 'tmp/js/default_a.3d04f375.js' },
-        { src: [ 'test/fixtures/js/file3.js', 'test/fixtures/js/file4.js' ],
-          dest: 'tmp/js/default_b.bfcf287e.js' }
-      ];
-    test.deepEqual(configLog, expectedConfigLog, 'should set a config object listing all files');
+    var expectedVersionsMap = [
+      { version: '3d04f375',
+        versionedPath: 'tmp/js/default_a.3d04f375.js',
+        originalPath: 'tmp/js/default_a.js'
+      },
+      {
+        version: 'bfcf287e',
+        versionedPath: 'tmp/js/default_b.bfcf287e.js',
+        originalPath: 'tmp/js/default_b.js'
+      }
+    ];
+    test.deepEqual(versionsMap, expectedVersionsMap, 'should set a config object listing all files');
 
     test.ok(grunt.file.exists('tmp/js/default_a.3d04f375.js'), 'should create a versioned default_a bundle.');
     test.ok(grunt.file.exists('tmp/js/default_b.bfcf287e.js'), 'should create a versioned default_b bundle.');
