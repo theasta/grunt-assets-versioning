@@ -34,8 +34,8 @@ module.exports = function(grunt) {
       dateFormat: 'YYYYMMDDHHmmss',
       timezoneOffset: 0,
       outputTrimDir: '',
-      rename: function(destPath, rev) {
-        return path.dirname(destPath) + path.sep + path.basename(destPath, path.extname(destPath)) + '.' + rev + path.extname(destPath);
+      rename: function(destPath, version) {
+        return path.dirname(destPath) + path.sep + path.basename(destPath, path.extname(destPath)) + '.' + version + path.extname(destPath);
       },
       output: null,
       skipExisting: true,
@@ -64,7 +64,7 @@ module.exports = function(grunt) {
       grunt.log.debug('External Task Mode');
 
       if (!!options.multitask) {
-        options.tasks = [options.multitask + ':' + options.multitaskTarget]
+        options.tasks = [options.multitask + ':' + options.multitaskTarget];
       }
 
       if (options.tasks.length !== 1) {
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 
       grunt.log.debug("Iterating through file mapping - " + (index+1) + "/" + taskFiles.length);
 
-      var rev;
+      var version;
       var destFilePath;
       var src = f.src.filter(function (file) {
         return grunt.file.isFile(file);
@@ -130,22 +130,22 @@ module.exports = function(grunt) {
         return;
       }
 
-      rev = getVersionProcessor(options.use)(src, options);
-      grunt.log.debug('Version tag (' + options.use + '): ' + rev);
+      version = getVersionProcessor(options.use)(src, options);
+      grunt.log.debug('Version tag (' + options.use + '): ' + version);
 
-      if (rev === '') {
+      if (version === '') {
         grunt.fail.warn("Failed at generating a version tag for " + f.dest, 1);
         return false;
       }
 
-      destFilePath = options.rename.call(this, f.dest, rev);
+      destFilePath = options.rename.call(this, f.dest, version);
       grunt.log.debug('Destination filename: ' + destFilePath);
 
       if (options.output) {
         output.push({
-          rev: rev,
-          path: f.dest.replace(options.outputTrimDir, ''),
-          revved_path: destFilePath.replace(options.outputTrimDir, '')
+          version: version,
+          originalPath: f.dest.replace(options.outputTrimDir, ''),
+          versionedPath: destFilePath.replace(options.outputTrimDir, '')
         });
       }
 
