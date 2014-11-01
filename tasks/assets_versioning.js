@@ -33,11 +33,16 @@ module.exports = function(grunt) {
       encoding: 'utf8',
       dateFormat: 'YYYYMMDDHHmmss',
       timezoneOffset: 0,
-      outputTrimDir: '',
-      rename: function(destPath, version) {
-        return path.dirname(destPath) + path.sep + path.basename(destPath, path.extname(destPath)) + '.' + version + path.extname(destPath);
+      versionize: function(destPath, version) {
+        return path.dirname(destPath) +
+          path.sep +
+          path.basename(destPath, path.extname(destPath)) +
+          '.'+
+          version +
+          path.extname(destPath);
       },
-      output: null,
+      versionsMapFile: null,
+      versionsMapTrimPath: '',
       skipExisting: true,
       multitask: false,
       multitaskTarget: this.target,
@@ -49,15 +54,50 @@ module.exports = function(grunt) {
       grunt.fail.warn('Invalid argument : options.use should be equal to date or hash', 1);
     }
 
-    var revFiles = [];
-    var output = [];
+    /**
+     * Is the current task trying to version files from another task or not?
+     * @type {boolean}
+     */
+    var isExternalTaskMode = !!options.multitask || Array.isArray(options.tasks);
+
+    /**
+     * Task files as provided by Grunt
+     */
     var taskFiles;
+
+    /**
+     * Task files with versioned destination, will be consumed by Grunt
+     * @type {Array.{src: Array, dest: string}}
+     */
+    var revFiles = [];
+
+    /**
+     * Map of versioned files
+     * @type {Array.{version: string, originalPath: string, versionedPath: string}}
+     */
+    var versionsMap = [];
+
+
+    /**
+     * Target Task full name (for example assets_versioning:myTask)
+     * @type {string}
+     */
+    var targetTask = this.name + ':' + this.target;
+
+    /**
+     * Target Task configuration key (for example assets_versioning.myTask)
+     * @type {string}
+     */
+    var targetTaskConfigKey = this.name + '.' + this.target;
+
+    /**
+     * Target Task Config
+     */
+    var taskConfig = {};
+
     var surrogateTask;
     var surrogateTaskConfigKey;
-    var taskConfig;
-    var targetTaskConfigKey = this.name + '.' + this.target;
-    var targetTask = this.name + ':' + this.target;
-    var isExternalTaskMode = !!options.multitask || Array.isArray(options.tasks);
+
 
     if (isExternalTaskMode) {
 
@@ -138,16 +178,15 @@ module.exports = function(grunt) {
         return false;
       }
 
-      destFilePath = options.rename.call(this, f.dest, version);
+      destFilePath = options.versionize.call(this, f.dest, version);
       grunt.log.debug('Destination filename: ' + destFilePath);
 
-      if (options.output) {
-        output.push({
-          version: version,
-          originalPath: f.dest.replace(options.outputTrimDir, ''),
-          versionedPath: destFilePath.replace(options.outputTrimDir, '')
-        });
-      }
+      // push to the map of versions
+      versionsMap.push({
+        version: version,
+        originalPath: f.dest.replace(options.versionsMapTrimPath, ''),
+        versionedPath: destFilePath.replace(options.versionsMapTrimPath, '')
+      });
 
       // check if file already exists
       if (options.skipExisting === true) {
@@ -170,13 +209,13 @@ module.exports = function(grunt) {
 
     });
 
-    if (options.output) {
-      grunt.file.write(options.output, JSON.stringify(output));
-      grunt.log.debug("Output content: ", output);
+    if (typeof options.versionsMapFile === "string") {
+      grunt.file.write(options.versionsMapFile, JSON.stringify(versionsMap));
     }
+    grunt.config.set(this.name + '.' + this.target + '.versionsMap', versionsMap);
+    grunt.log.debug("Versions Map: ", versionsMap);
 
-    grunt.config.set(this.name + '.' + this.target + '.revFiles', revFiles);
-    grunt.log.debug("Version file mapping: ", revFiles);
+    grunt.log.debug("Versioned Files Object: ", revFiles);
 
     // run surrogate task if defined
     if (isExternalTaskMode) {
@@ -186,7 +225,7 @@ module.exports = function(grunt) {
       delete taskConfig.dest;
       taskConfig.files = revFiles;
       grunt.config.set(surrogateTaskConfigKey, taskConfig);
-      grunt.log.debug("Created surrogateTask 'surrogateTaskConfigKey'");
+      grunt.log.debug("Created surrogateTask '" + surrogateTaskConfigKey + "'");
       grunt.log.debug(taskConfig);
 
       if (options.runTask) {

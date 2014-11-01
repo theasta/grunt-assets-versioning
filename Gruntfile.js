@@ -106,7 +106,7 @@ module.exports = function(grunt) {
           multitaskTarget: 'options_multitaskTarget_subtask'
         }
       },
-      options_output: {
+      options_versionsMapFile: {
         files: [{
           expand : true,
           cwd    : "test/fixtures/images/",
@@ -114,7 +114,7 @@ module.exports = function(grunt) {
           dest   : "tmp/options_output/"
         }],
         options: {
-          output     : 'tmp/options_output.json'
+          versionsMapFile     : 'tmp/options_output.json'
         }
       },
       options_output_trim_dir: {
@@ -125,8 +125,8 @@ module.exports = function(grunt) {
           dest   : "tmp/options_output_trim/"
         }],
         options: {
-          output     : 'tmp/options_output_trim.json',
-          outputTrimDir : 'tmp/options_output_trim/'
+          versionsMapFile     : 'tmp/options_output_trim.json',
+          versionsMapTrimPath : 'tmp/options_output_trim/'
         }
       },
       files_compact_format: {
@@ -351,7 +351,7 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_array',
     'assets_versioning:options_multitask',
     'assets_versioning:options_multitaskTarget',
-    'assets_versioning:options_output',
+    'assets_versioning:options_versionsMapFile',
     'assets_versioning:options_output_trim_dir',
     'assets_versioning:files_compact_format',
     'assets_versioning:files_object_format',
