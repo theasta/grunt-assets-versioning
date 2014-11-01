@@ -53,16 +53,13 @@ Should the revision marker be a md5 hash or a date ?
 Type: `Integer`
 Default value: `8`
 
-If you choose to version your files using a hash, hashLength let you set how
-long the hash is going to be.
+If you choose to version your files using a hash, hashLength let you set how long the hash is going to be.
 
 #### options.dateFormat
 Type: `String`
 Default value: `YYYYMMDDHHmmss`
 
-
-If you choose to version your files using a date, you can specify a
-dateformat. grunt-assets-versioning is using moment.js to format date.
+If you choose to version your files using a date, you can specify a dateformat. grunt-assets-versioning is using moment.js to format date.
 
 #### options.timezoneOffset
 Type: `Number`
@@ -74,7 +71,8 @@ Timezone offset (in hours) to take into account when generating the date version
 #### options.tasks
 Type: `String` or `Boolean`
 Default value: `false`
-The task you want to run while versioning its destination files
+
+The task you want to run while versioning its destination files.
 
 #### options.versionsMapFile
 Type: `String`
@@ -100,7 +98,6 @@ By default you can retrieve the map of versions by accessing this configuration 
 `grunt.config('assets_versioning.yourTask.versionsMap')`
 The versionsMapFile gives you the possibility to also output that map to a file.
 
-
 #### options.versionsMapTrimPath
 Type: `String`
 This gives you the possibility to trim the path output in the version map.
@@ -124,6 +121,7 @@ For example, if you set options.versionsMapTrimPath to be 'super/long/path/to/',
 
 you will get this one:
 
+
 ```
 [
   {
@@ -141,7 +139,8 @@ you will get this one:
 
 #### options.skipExisting
 Type: `Boolean` or `Array`
-Default value: `true`
+Default value: `false`
+
 If true, will skip the task if the destination file already exists.
 If type Array, will skip the task if the destination file, once versioned, is listed in the array.
 
