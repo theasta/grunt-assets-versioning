@@ -46,7 +46,7 @@ module.exports = function(grunt) {
      * Create a concrete versioner instance
      * @type {*|AbstractVersioner|exports}
      */
-    var versioner = versionerFactory(grunt, options, this);
+    var versioner = versionerFactory(options, this);
 
     versioner.createVersionedGruntFilesObject();
 

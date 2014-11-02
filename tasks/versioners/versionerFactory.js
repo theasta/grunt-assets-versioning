@@ -2,11 +2,11 @@
  * @module versioners/versionerFactory
  */
 
-
+var grunt = require('grunt');
 var InternalVersioner = require('./internalVersioner');
 var ExternalVersioner = require('./externalVersioner');
 
-module.exports = function (grunt, options, taskContext) {
+module.exports = function (options, taskContext) {
   "use strict";
   var Versioner;
   /**
@@ -23,5 +23,5 @@ module.exports = function (grunt, options, taskContext) {
     Versioner = InternalVersioner;
   }
 
-  return new Versioner(grunt, options, taskContext);
+  return new Versioner(options, taskContext);
 };

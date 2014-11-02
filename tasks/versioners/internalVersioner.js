@@ -4,6 +4,7 @@
 
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
+var grunt = require('grunt');
 
 /**
  * Internal Task Versioner
@@ -14,8 +15,8 @@ var inherit = require('../helpers/inherit');
 var InternalVersioner = inherit(AbstractVersioner);
 
 InternalVersioner.prototype.getTaskFiles = function () {
-  this.grunt.log.debug('Internal Task Mode');
-  this.grunt.log.debug("Versioning files passed directly to '" + this.targetTask + "' task.");
+  grunt.log.debug('Internal Task Mode');
+  grunt.log.debug("Versioning files passed directly to '" + this.targetTask + "' task.");
   return this.taskContext.files;
 };
 
@@ -29,7 +30,6 @@ InternalVersioner.prototype.getTargetTaskConfigKey = function () {
 
 InternalVersioner.prototype.doVersion = function () {
 
-  var grunt = this.grunt;
   this.revFiles.forEach(function (fRev) {
 
     var content = fRev.src.map(function (filepath) {
