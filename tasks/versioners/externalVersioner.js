@@ -5,6 +5,7 @@
 var taskHelper = require('../helpers/task');
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
+var grunt = require('grunt');
 
 /**
  * External Task Versioner
@@ -19,7 +20,7 @@ var ExternalVersioner = inherit(AbstractVersioner);
  */
 ExternalVersioner.prototype.checkFilesConflict = function () {
   if (this.taskContext.data.files != null) {
-    this.grunt.log.error("This task is going to version the files from '" + this.targetTask + "'" +
+    grunt.log.error("This task is going to version the files from '" + this.targetTask + "'" +
     ", and not the ones passed to '" + this.getAssetsVersioningTaskName() + "'.");
   }
 };
@@ -30,21 +31,14 @@ ExternalVersioner.prototype.getTaskFiles = function () {
 
   var taskConfig = this.getTaskConfig();
 
-  this.grunt.log.writeln("Versioning files from " + this.targetTask + " task.");
-  this.grunt.log.debug("Surrogate task: " + this.getSurrogateTaskName());
+  grunt.log.writeln("Versioning files from " + this.targetTask + " task.");
 
   if (!taskConfig) {
-    this.grunt.fail.warn("Task '" + this.targetTask + "' doesn't exist or doesn't have any configuration.", 1);
-  }
-
-  // In surrogate task mode, there should not be any 'files' property
-  if (this.taskContext.data.files != null) {
-    this.grunt.log.error("This task is going to version the files from '" + this.targetTask + "'" +
-      ", and will ignore the ones passed directly to it.");
+    grunt.fail.warn("Task '" + this.targetTask + "' doesn't exist or doesn't have any configuration.", 1);
   }
 
   // retrieve files from the target task
-  return this.grunt.task.normalizeMultiTaskFiles(taskConfig, this.taskContext.target);
+  return grunt.task.normalizeMultiTaskFiles(taskConfig, this.taskContext.target);
 };
 
 /**
@@ -69,13 +63,13 @@ ExternalVersioner.prototype.doVersion = function () {
   delete taskConfig.dest;
   taskConfig.files = this.revFiles;
 
-  this.grunt.config.set(surrogateTaskConfigKey, taskConfig);
-  this.grunt.log.debug("Created surrogateTask '" + surrogateTaskConfigKey + "'");
-  this.grunt.log.debug(taskConfig);
+  grunt.config.set(surrogateTaskConfigKey, taskConfig);
+  grunt.log.debug("Created surrogateTask '" + surrogateTaskConfigKey + "'");
+  grunt.log.debug(taskConfig);
 
   if (this.options.runTask) {
-    this.grunt.verbose.writeln("Trigger task '" + surrogateTask + "'");
-    this.grunt.task.run(surrogateTask);
+    grunt.verbose.writeln("Trigger task '" + surrogateTask + "'");
+    grunt.task.run(surrogateTask);
   }
 };
 
