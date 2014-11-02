@@ -1,3 +1,7 @@
+/**
+ * @module processors/hash
+ */
+
 var crypto = require('crypto');
 var fs = require('fs');
 
