@@ -188,7 +188,8 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
-* 2014-10-12   v0.5.0   Add an option tasks that will eventually replace options.multitask and options.multitaskTarget. Only accept a single task so far.
+* 2014-11-01   v0.6.0   Major refactoring. skipVersioning false by default. options.versionsMapFile replaces options.output
+* 2014-10-12   v0.5.0   Add tasks option that will eventually replace options.multitask and options.multitaskTarget. Only accept a single task so far.
 * 2014-10-11   v0.4.0   Skip task by providing an array of destination files to ignore.
 * 2014-10-10   v0.3.1   Provide more feedback in debug mode. Improve unit tests coverage significantly.
 * 2014-09-27   v0.3.0   Concatenate files if no surrogate task is passed. Changes in default options. Use hash instead of date. Skip versioning if destination file already exists.
