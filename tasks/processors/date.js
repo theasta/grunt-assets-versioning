@@ -1,3 +1,7 @@
+/**
+ * @module processors/date
+ */
+
 var fs = require('fs');
 var moment = require('moment');
 

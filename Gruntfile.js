@@ -13,10 +13,19 @@ module.exports = function(grunt) {
   var _fileGlobSync;
   // Project configuration.
   grunt.initConfig({
+    jsdoc : {
+      dist : {
+        src: ['tasks/**/*.js'],
+        options: {
+          destination: 'docs',
+          configure: 'jsdoc.conf.json'
+        }
+      }
+    },
     jshint: {
       all: [
         'Gruntfile.js',
-        'tasks/*.js',
+        'tasks/**/*.js',
         '<%= nodeunit.tests %>'
       ],
       options: {
@@ -93,17 +102,6 @@ module.exports = function(grunt) {
         files: {
           'tmp/js/skip_existing_array_1.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
           'tmp/js/skip_existing_array_2.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
-        }
-      },
-      options_multitask: {
-        options: {
-          multitask: 'concat'
-        }
-      },
-      options_multitaskTarget: {
-        options: {
-          multitask: 'concat',
-          multitaskTarget: 'options_multitaskTarget_subtask'
         }
       },
       options_versionsMapFile: {
@@ -246,19 +244,7 @@ module.exports = function(grunt) {
           dest   : "tmp/task_files_expand_format/"
         }]
       },
-      fail_mix_files_task: {},
-      options_multitask: {
-        files: {
-          'tmp/js/options_multitask_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
-          'tmp/js/options_multitask_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
-        }
-      },
-      options_multitaskTarget_subtask: {
-        files: {
-          'tmp/js/options_multitaskTarget_subtask_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
-          'tmp/js/options_multitaskTarget_subtask_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
-        }
-      }
+      fail_mix_files_task: {}
     },
 
     // Unit tests.
@@ -279,6 +265,7 @@ module.exports = function(grunt) {
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
@@ -349,8 +336,6 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_true',
     'assets_versioning:options_skipExisting_false',
     'assets_versioning:options_skipExisting_array',
-    'assets_versioning:options_multitask',
-    'assets_versioning:options_multitaskTarget',
     'assets_versioning:options_versionsMapFile',
     'assets_versioning:options_output_trim_dir',
     'assets_versioning:files_compact_format',
