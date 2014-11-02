@@ -14,7 +14,19 @@ var inherit = require('../helpers/inherit');
  */
 var ExternalVersioner = inherit(AbstractVersioner);
 
+/**
+ * Display a warning if files have been passed directly to the assetsVersioning task
+ */
+ExternalVersioner.prototype.checkFilesConflict = function () {
+  if (this.taskContext.data.files != null) {
+    this.grunt.log.error("This task is going to version the files from '" + this.targetTask + "'" +
+    ", and not the ones passed to '" + this.getAssetsVersioningTaskName() + "'.");
+  }
+};
+
 ExternalVersioner.prototype.getTaskFiles = function () {
+
+  this.checkFilesConflict();
 
   var taskConfig = this.getTaskConfig();
 
