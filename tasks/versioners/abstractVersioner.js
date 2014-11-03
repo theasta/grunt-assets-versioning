@@ -4,6 +4,7 @@
 
 var grunt = require('grunt');
 var taggers = require('../taggers');
+var _ = require('lodash');
 
 /**
  * A grunt files configuration object
@@ -70,7 +71,8 @@ AbstractVersioner.prototype.getAssetsVersioningTaskConfigKey = function () {
 AbstractVersioner.prototype.hijackTask = function (task) {
 
   var updatedTaskFiles = [];
-  task.taskFiles.forEach(function(f, index) {
+  var allVersionedPath = [];
+    task.taskFiles.forEach(function(f, index) {
 
     grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + task.taskFiles.length);
 
@@ -105,11 +107,18 @@ AbstractVersioner.prototype.hijackTask = function (task) {
     grunt.log.debug('Destination filename: ' + destFilePath);
 
     // push to the map of versions
-    this.versionsMap.push({
-      version: version,
-      originalPath: f.dest.replace(this.options.versionsMapTrimPath, ''),
-      versionedPath: destFilePath.replace(this.options.versionsMapTrimPath, '')
-    });
+
+    var versionedPath = destFilePath.replace(this.options.versionsMapTrimPath, '');
+    if (_.contains(allVersionedPath, versionedPath)) {
+      grunt.fail.warn("Duplicate versioned path detected: '" + versionedPath +"'.");
+    } else {
+      allVersionedPath.push(versionedPath);
+      this.versionsMap.push({
+        version: version,
+        originalPath: f.dest.replace(this.options.versionsMapTrimPath, ''),
+        versionedPath: versionedPath
+      });
+    }
 
     // check if file already exists
     if (this.options.skipExisting === true) {
