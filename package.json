@@ -1,7 +1,7 @@
 {
   "name": "grunt-assets-versioning",
   "description": "Versioning static assets with Grunt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/theasta/grunt-assets-versioning",
   "author": {
     "name": "Alexandrine Boissière",

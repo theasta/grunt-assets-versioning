@@ -211,6 +211,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2014-11-02   v1.0.1   Add the ability to generate a version map based on a lo-dash template
 * 2014-11-02   v1.0.0   options.tasks accepts multiple.tasks. options.use replaced by options.tag
 * 2014-11-01   v0.6.0   Major refactoring. skipVersioning false by default. options.versionsMapFile replaces options.output
 * 2014-10-12   v0.5.0   Add tasks option that will eventually replace options.multitask and options.multitaskTarget. Only accept a single task so far.
