@@ -197,6 +197,13 @@ module.exports = function(grunt) {
         }
       },
 
+      fail_duplicate_destination_files: {
+        files: [
+          { src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/duplicate_file.js' },
+          { src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/duplicate_file.js' }
+        ]
+      },
+
       fail_no_valid_files: {
         'tmp/js/no_file/no_file.js': ['test/fixtures/js/file2.js']
       },
@@ -400,6 +407,7 @@ module.exports = function(grunt) {
     'assets_versioning:fail_no_valid_files',
     'assets_versioning:fail_mix_files_task',
     'assets_versioning:fail_surrogate_already_exists',
+    'assets_versioning:fail_duplicate_destination_files',
     'assets_versioning:fail_no_valid_external_task'
   ]);
 
