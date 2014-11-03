@@ -97,15 +97,25 @@ exports.assets_versioning = {
 
   },
 
-  options_output_trim_dir: function (test) {
+  output_versionsMapTrimPath: function (test) {
     test.expect(1);
 
-    var actual = grunt.file.read('tmp/options_output_trim.json');
-    var expected = grunt.file.read('test/expected/output/options_output_trim.json');
-    test.deepEqual(JSON.parse(actual), JSON.parse(expected), 'should create a json file with proper data');
+    var actual = grunt.file.readJSON('tmp/options_output_trim.json');
+    var expected = grunt.file.readJSON('test/expected/output/options_output_trim.json');
+    test.deepEqual(actual, expected, 'should create a json file with proper data');
 
     test.done();
 
+  },
+
+  options_versionsMapTemplate: function (test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp/options_versionsMapTemplate.php');
+    var expected = grunt.file.read('test/expected/output/dict.php');
+    test.equal(actual, expected, 'should create a file using a template and the versions map data');
+
+    test.done();
   },
 
   files_compact_format: function(test) {

@@ -153,7 +153,24 @@ AbstractVersioner.prototype.hijackTask = function (task) {
 AbstractVersioner.prototype.saveVersionsMap = function () {
 
   if (typeof this.options.versionsMapFile === "string") {
-    grunt.file.write(this.options.versionsMapFile, JSON.stringify(this.versionsMap));
+    var versionsMapContent;
+
+    // Are we generating a json file or are we using a template file?
+    var templateFile = this.options.versionsMapTemplate;
+    if (typeof templateFile === "string") {
+      if (!grunt.file.exists(templateFile)) {
+
+      }
+      var template = grunt.util.normalizelf(grunt.file.read(templateFile, 'utf8'));
+      versionsMapContent = grunt.template.process(template, {
+        data: {
+          files: this.versionsMap
+        }
+      }).replace(/[\n]{2}/g,"\n");
+    } else {
+      versionsMapContent = JSON.stringify(this.versionsMap);
+    }
+    grunt.file.write(this.options.versionsMapFile, versionsMapContent);
   }
 
   grunt.config.set(this.getAssetsVersioningTaskConfigKey() + '.versionsMap', this.versionsMap);

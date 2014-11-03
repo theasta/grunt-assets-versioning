@@ -115,7 +115,7 @@ module.exports = function(grunt) {
           versionsMapFile     : 'tmp/options_output.json'
         }
       },
-      options_output_trim_dir: {
+      output_versionsMapTrimPath: {
         files: [{
           expand : true,
           cwd    : "test/fixtures/images/",
@@ -127,6 +127,21 @@ module.exports = function(grunt) {
           versionsMapTrimPath : 'tmp/options_output_trim/'
         }
       },
+
+      options_versionsMapTemplate: {
+        files: [{
+          expand : true,
+          cwd    : "test/fixtures/images/",
+          src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+          dest   : "tmp/options_versionsMapTemplate/"
+        }],
+        options: {
+          versionsMapFile     : 'tmp/options_versionsMapTemplate.php',
+          versionsMapTemplate : 'test/fixtures/templates/php.tpl',
+          versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+        }
+      },
+
       files_compact_format: {
         src: [
           'test/fixtures/js/file1.js',
@@ -387,7 +402,8 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_false',
     'assets_versioning:options_skipExisting_array',
     'assets_versioning:options_versionsMapFile',
-    'assets_versioning:options_output_trim_dir',
+    'assets_versioning:output_versionsMapTrimPath',
+    'assets_versioning:options_versionsMapTemplate',
     'assets_versioning:files_compact_format',
     'assets_versioning:files_object_format',
     'assets_versioning:files_array_format',
