@@ -2,7 +2,7 @@
  * @module versioners/InternalVersioner
  */
 
-var TaskClass = require('../helpers/Task');
+var TaskClass = require('../helpers/task');
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
 var grunt = require('grunt');
