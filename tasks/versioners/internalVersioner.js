@@ -40,11 +40,17 @@ InternalVersioner.prototype.doVersion = function () {
 
   this.surrogateTasks[0].files.forEach(function (fRev) {
 
-    var content = fRev.src.map(function (filepath) {
-      return grunt.file.read(filepath);
-    }).join(grunt.util.linefeed);
+    // if only one file, copy it
+    // otherwise concatenate the content
+    if (fRev.src.length === 1) {
+      grunt.file.copy(fRev.src[0], fRev.dest);
+    } else {
+      var content = fRev.src.map(function (filepath) {
+        return grunt.file.read(filepath);
+      }).join(grunt.util.linefeed);
 
-    grunt.file.write(fRev.dest, content);
+      grunt.file.write(fRev.dest, content);
+    }
 
     grunt.log.writeln('File ' + fRev.dest + ' created.');
 
