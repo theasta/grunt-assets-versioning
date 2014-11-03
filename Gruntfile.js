@@ -42,7 +42,7 @@ module.exports = function(grunt) {
     assets_versioning: {
       options_tag_date: {
         options: {
-          use           : 'date'
+          tag           : 'date'
         },
         files: {
           'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
       },
       options_dateFormat: {
         options: {
-          use           : 'date',
+          tag           : 'date',
           dateFormat: 'YYMMDDHHmmss',
           timezoneOffset: 7
         },
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
       },
       options_timezoneOffset: {
         options: {
-          use           : 'date',
+          tag           : 'date',
           timezoneOffset: 7
         },
         files: {
@@ -175,10 +175,25 @@ module.exports = function(grunt) {
           tasks: ['concat:task_files_expand_format']
         }
       },
+      multiple_tasks: {
+        options: {
+          tasks: [
+            'concat:multiple_task_1',
+            'concat:multiple_task_2',
+            'concat:multiple_task_3'
+          ]
+        }
+      },
       files_default_behaviour: {
         files: {
           'tmp/js/default_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
           'tmp/js/default_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
+
+      fail_surrogate_already_exists: {
+        options: {
+          tasks: ['concat:fail_surrogate_already_exists']
         }
       },
 
@@ -236,6 +251,34 @@ module.exports = function(grunt) {
           {src: ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'], dest: 'tmp/js/task_files_array_format_b.js'}
         ]
       },
+      multiple_task_1: {
+        files: {
+          'tmp/js/multiple_task_1_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'],
+          'tmp/js/multiple_task_1_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      },
+      multiple_task_2: {
+        src: [
+          'test/fixtures/js/file1.js',
+          'test/fixtures/js/file2.js',
+          'test/fixtures/js/file3.js'
+        ],
+        dest: 'tmp/js/multiple_task_2.js'
+      },
+      multiple_task_3: {
+        files: [
+          {src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/multiple_task_3_a.js'},
+          {src: ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'], dest: 'tmp/js/multiple_task_3_b.js'}
+        ]
+      },
+      fail_surrogate_already_exists: {
+        src: [
+          'test/fixtures/js/file1.js'
+        ],
+        dest: 'tmp/js/fail_surrogate_already_exists.js'
+
+      },
+      fail_surrogate_already_exists_assets_versioning: {},
       task_files_expand_format: {
         files: [{
           expand : true,
@@ -346,6 +389,7 @@ module.exports = function(grunt) {
     'assets_versioning:task_files_object_format',
     'assets_versioning:task_files_array_format',
     'assets_versioning:task_files_expand_format',
+    'assets_versioning:multiple_tasks',
     'assets_versioning:files_default_behaviour',
     'nodeunit']);
 
@@ -355,6 +399,7 @@ module.exports = function(grunt) {
     'assets_versioning:fail_no_files',
     'assets_versioning:fail_no_valid_files',
     'assets_versioning:fail_mix_files_task',
+    'assets_versioning:fail_surrogate_already_exists',
     'assets_versioning:fail_no_valid_external_task'
   ]);
 

@@ -6,16 +6,19 @@ var grunt = require('grunt');
 var InternalVersioner = require('./internalVersioner');
 var ExternalVersioner = require('./externalVersioner');
 
-module.exports = function (options, taskContext) {
+/**
+ * Create a concrete Versioner instance
+ * @param {Object} options
+ * @param {Array.<string>} [options.tasks] - Array of tasks to run and version
+ * @param {Object} taskData
+ * @returns {module:versioners/AbstractVersioner}
+ */
+module.exports = function (options, taskData) {
   "use strict";
   var Versioner;
-  /**
-   * Is the current task trying to version files from another task or not?
-   * @type {boolean}
-   */
-  var isExternalTaskMode = !!options.multitask || Array.isArray(options.tasks);
 
-  if (isExternalTaskMode) {
+  // Is the current task trying to version files from another task or not?
+  if (Array.isArray(options.tasks)) {
     grunt.log.debug('External Task Mode');
     Versioner = ExternalVersioner;
   } else {
@@ -23,5 +26,5 @@ module.exports = function (options, taskContext) {
     Versioner = InternalVersioner;
   }
 
-  return new Versioner(options, taskContext);
+  return new Versioner(options, taskData);
 };

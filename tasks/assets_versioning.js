@@ -10,6 +10,7 @@
 
 var path = require('path');
 var versionerFactory = require('./versioners/versionerFactory');
+var _ = require('lodash');
 
 module.exports = function(grunt) {
 
@@ -18,7 +19,7 @@ module.exports = function(grunt) {
     var done = this.async();
 
     var options = this.options({
-      use: 'hash',
+      tag: 'hash',
       hashLength: 8,
       encoding: 'utf8',
       dateFormat: 'YYYYMMDDHHmmss',
@@ -38,17 +39,15 @@ module.exports = function(grunt) {
       runTask: true
     });
 
-    if (['hash', 'date'].indexOf(options.use) === -1) {
-      grunt.fail.warn('Invalid argument : options.use should be equal to date or hash', 1);
+    if (!_.contains(['hash', 'date'], options.tag)) {
+      grunt.fail.warn('Invalid argument : options.tag should be equal to date or hash', 1);
     }
 
     /**
      * Create a concrete versioner instance
-     * @type {*|AbstractVersioner|exports}
+     * @type {AbstractVersioner}
      */
     var versioner = versionerFactory(options, this);
-
-    versioner.createVersionedGruntFilesObject();
 
     versioner.saveVersionsMap();
 

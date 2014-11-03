@@ -1,10 +1,18 @@
 /**
- * @module processors/hash
+ * @module taggers/hash
  */
 
 var crypto = require('crypto');
 var fs = require('fs');
 
+/**
+ * Hash tagger
+ * @param {Array} src - Array of files
+ * @param {Object} options
+ * @param {string} options.encoding - File encoding ('uf8')
+ * @param {number} options.hashLength - Hash marker length
+ * @returns {string}
+ */
 module.exports = function (src, options) {
   var hash = '';
 
