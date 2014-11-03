@@ -2,7 +2,7 @@
  * @module versioners/ExternalVersioner
  */
 
-var taskHelper = require('../helpers/task');
+var TaskClass = require('../helpers/task');
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
 var grunt = require('grunt');
@@ -16,69 +16,40 @@ var grunt = require('grunt');
 var ExternalVersioner = inherit(AbstractVersioner);
 
 /**
- * Display a warning if files have been passed directly to the assetsVersioning task
+ * Initialization function run by the constructor
  */
-ExternalVersioner.prototype.checkFilesConflict = function () {
-  if (this.taskContext.data.files != null) {
-    grunt.log.error("This task is going to version the files from '" + this.targetTask + "'" +
-    ", and not the ones passed to '" + this.getAssetsVersioningTaskName() + "'.");
+ExternalVersioner.prototype.initialize = function () {
+  // display a warning if both assets versioning and target tasks have a file configuration object
+  if (this.taskData.data.files != null) {
+    grunt.log.error("Files passed to '" + this.getAssetsVersioningTaskName() + "' won't be versioned.");
   }
-};
-
-ExternalVersioner.prototype.getTaskFiles = function () {
-
-  this.checkFilesConflict();
-
-  var taskConfig = this.getTaskConfig();
-
-  grunt.log.writeln("Versioning files from " + this.targetTask + " task.");
-
-  if (!taskConfig) {
-    grunt.fail.warn("Task '" + this.targetTask + "' doesn't exist or doesn't have any configuration.", 1);
-  }
-
-  // retrieve files from the target task
-  return grunt.task.normalizeMultiTaskFiles(taskConfig, this.taskContext.target);
 };
 
 /**
  * Get the target task full name
- * @returns {Array}
+ * @returns {Array.<Task>}
  */
-ExternalVersioner.prototype.getTargetTask = function () {
-  return this.options.tasks[0];
-};
-
-ExternalVersioner.prototype.getTargetTaskConfigKey = function () {
-  return taskHelper.getTaskConfigKey(this.targetTask);
+ExternalVersioner.prototype.getTargetTasks = function () {
+  return this.options.tasks.map(function (taskName) {
+    return new TaskClass(taskName);
+  });
 };
 
 ExternalVersioner.prototype.doVersion = function () {
-  var taskConfig = this.getTaskConfig();
-  var surrogateTask = this.getSurrogateTaskName();
-  var surrogateTaskConfigKey = taskHelper.getTaskConfigKey(surrogateTask);
-
-  // remove src & dest keys as they take precedence over the files key
-  delete taskConfig.src;
-  delete taskConfig.dest;
-  taskConfig.files = this.revFiles;
-
-  grunt.config.set(surrogateTaskConfigKey, taskConfig);
-  grunt.log.debug("Created surrogateTask '" + surrogateTaskConfigKey + "'");
-  grunt.log.debug(taskConfig);
-
   if (this.options.runTask) {
-    grunt.verbose.writeln("Trigger task '" + surrogateTask + "'");
-    grunt.task.run(surrogateTask);
+    grunt.verbose.writeln("Tasks triggered: '" + this.surrogateTasks.join(", ") + "'");
+    grunt.task.run(this.surrogateTasks);
   }
 };
 
 /**
- * Get the surrogate task name
- * @returns {string}
+ * Create a surrogate task
+ * @param {Array} updatedTaskFiles
+ * @param task
+ * @returns {surrogateTask}
  */
-ExternalVersioner.prototype.getSurrogateTaskName = function () {
-  return this.targetTask + '_' + this.taskContext.name;
+ExternalVersioner.prototype.createSurrogateTask = function (updatedTaskFiles, task) {
+  return task.createSurrogate(updatedTaskFiles);
 };
 
 module.exports = ExternalVersioner;

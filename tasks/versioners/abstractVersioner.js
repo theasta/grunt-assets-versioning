@@ -3,88 +3,56 @@
  */
 
 var grunt = require('grunt');
-require('../processors/date');
-require('../processors/hash');
+var taggers = require('../taggers');
+
+/**
+ * A grunt files configuration object
+ * @typedef {{src: Array, dest: string}} filesConfigurationObject
+ */
+
+/**
+ * A surrogate task - task with destination files tagged with a revision marker
+ * @typedef {(string|{files: Array})} surrogateTask
+ */
 
 /**
  * Abstract Versioner
  * @constructor
  * @alias module:versioners/AbstractVersioner
  * @param {object} options - Grunt options
- * @param {object} taskContext - Grunt task context (=this)
+ * @param {object} taskData - Grunt Assets Versioning Task Object
  */
-function AbstractVersioner(options, taskContext) {
+function AbstractVersioner(options, taskData) {
   this.options = options;
-  this.taskContext = taskContext;
-
-  /**
-   * Target Task full name (for example assets_versioning:myTask)
-   * @type {string}
-   */
-  this.targetTask = this.getTargetTask();
-
-  /**
-   * Task files as provided by Grunt
-   */
-  this.taskFiles = this.getTaskFiles();
-
-  /**
-   * Task files with versioned destination, will be consumed by Grunt
-   * @type {Array}
-   */
-  this.revFiles = [];
+  this.taskData = taskData;
 
   /**
    * Map of versioned files
-   * @type {Array}
+   * @type {Array.<{version, originalPath: string, versionedPath: string}>}
    */
   this.versionsMap = [];
 
   /**
-   * Get one of the processors : hash or date
+   * Get one of the tagger functions: hash or date
+   * @type {function}
    */
-  this.versionProcessor = this._getVersionProcessor(this.options.use);
+  this.versionTagger = taggers[this.options.tag];
+
+  this.initialize();
+
+  /**
+   * Array of surrogate tasks
+   * @type {Array.<surrogateTask>}
+   */
+  this.surrogateTasks = this.getTargetTasks().map(this.hijackTask.bind(this));
 }
-
-/**
- * Get the target task name
- * @abstract
- */
-AbstractVersioner.prototype.getTargetTask = function () {
-  throw new Error('Should be implemented by the subclass');
-};
-
-/**
- * Get the target task configuration key
- * @abstract
- */
-AbstractVersioner.prototype.getTargetTaskConfigKey = function () {
-  throw new Error('Should be implemented by the subclass');
-};
-
-/**
- * Get the target task configuration
- * @returns {Object}
- */
-AbstractVersioner.prototype.getTaskConfig = function () {
-  return grunt.config(this.getTargetTaskConfigKey());
-};
-
-/**
- * Get the target task grunt files configuration
- * @returns {Array}
- * @abstract
- */
-AbstractVersioner.prototype.getTaskFiles = function () {
-  throw new Error('Should be implemented by the subclass');
-};
 
 /**
  * Get the assets versioning task name (for example assets_versioning:mytask)
  * @returns {string}
  */
 AbstractVersioner.prototype.getAssetsVersioningTaskName = function () {
-  return this.taskContext.name + ':' + this.taskContext.target;
+  return this.taskData.name + ':' + this.taskData.target;
 };
 
 /**
@@ -92,31 +60,19 @@ AbstractVersioner.prototype.getAssetsVersioningTaskName = function () {
  * @returns {string}
  */
 AbstractVersioner.prototype.getAssetsVersioningTaskConfigKey = function () {
-  return this.taskContext.name + '.' + this.taskContext.target;
+  return this.taskData.name + '.' + this.taskData.target;
 };
 
 /**
- * Get a version tag processor
- * @param {string} type - version tag type: date or hash
- * @returns {module:processors/hash | module:processors/date}
- * @private
+ * Hijack a task by deducing the versioned name of its destination files and creating a surrogate task
+ * @returns {Array.<surrogateTask>} - Array of surrogate tasks objects
  */
-AbstractVersioner.prototype._getVersionProcessor = function (type) {
-  return require('../processors/' + type);
-};
+AbstractVersioner.prototype.hijackTask = function (task) {
 
-/**
- * Create a grunt files object where the destination files will have a version tag
- */
-AbstractVersioner.prototype.createVersionedGruntFilesObject = function () {
+  var updatedTaskFiles = [];
+  task.taskFiles.forEach(function(f, index) {
 
-  if (!this.taskFiles || this.taskFiles.length === 0) {
-    grunt.fail.warn("Task '" + this.targetTask + "' doesn't have any src-dest file mappings.", 1);
-  }
-
-  this.taskFiles.forEach(function(f, index) {
-
-    grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + this.taskFiles.length);
+    grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + task.taskFiles.length);
 
     var version;
     var destFilePath;
@@ -126,19 +82,19 @@ AbstractVersioner.prototype.createVersionedGruntFilesObject = function () {
 
     grunt.log.debug('Source files: ', src);
     if (src.length === 0) {
-      grunt.fail.warn("Task '" + this.targetTask + "' has no source files.");
+      grunt.fail.warn("Task '" + task.taskName + "' has no source files.");
       grunt.log.debug(JSON.stringify(f.orig));
       return false;
     }
 
     if (typeof f.dest !== 'string') {
-      grunt.log.error("Task '" + this.targetTask + "' has no destination file.");
+      grunt.log.error("Task '" + task.taskName + "' has no destination file.");
       grunt.log.debug(JSON.stringify(f.orig));
       return;
     }
 
-    version = this.versionProcessor(src, this.options);
-    grunt.log.debug('Version tag (' + this.options.use + '): ' + version);
+    version = this.versionTagger(src, this.options);
+    grunt.log.debug('Version tag (' + this.options.tag + '): ' + version);
 
     if (version === '') {
       grunt.fail.warn("Failed at generating a version tag for " + f.dest, 1);
@@ -172,12 +128,13 @@ AbstractVersioner.prototype.createVersionedGruntFilesObject = function () {
     }
 
     // log the src and dest data
-    this.revFiles.push({ src: src, dest: destFilePath });
+    updatedTaskFiles.push({ src: src, dest: destFilePath });
 
   }.bind(this));
 
-  grunt.log.debug("Versioned Files Object: ", this.revFiles);
+  grunt.log.debug("Versioned Files Object: ", updatedTaskFiles);
 
+  return this.createSurrogateTask(updatedTaskFiles, task);
 };
 
 /**
@@ -195,6 +152,31 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
   grunt.log.debug("Versions Map: ", this.versionsMap);
 };
 
+/* ---- ABSTRACT METHODS ---- */
+
+/**
+ * Initiliaze the task
+ * @abstract
+ */
+AbstractVersioner.prototype.initialize = function () {};
+
+/**
+ * Get target tasks instances
+ * @abstract
+ * @returns {TaskClass}
+ */
+AbstractVersioner.prototype.getTargetTasks = function () {
+  throw new Error('Should be implemented by the subclass');
+};
+
+/**
+ * Create a surrogate task
+ * @abstract
+ */
+AbstractVersioner.prototype.createSurrogateTask = function () {
+  throw new Error('Should be implemented by the subclass');
+};
+
 /**
  * Run the target task
  * @abstract
@@ -202,7 +184,5 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
 AbstractVersioner.prototype.doVersion = function () {
   throw new Error('Should be implemented by the subclass');
 };
-
-
 
 module.exports = AbstractVersioner;

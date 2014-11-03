@@ -2,6 +2,7 @@
  * @module versioners/InternalVersioner
  */
 
+var TaskClass = require('../helpers/task');
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
 var grunt = require('grunt');
@@ -12,25 +13,32 @@ var grunt = require('grunt');
  * @alias module:versioners/InternalVersioner
  * @augments module:versioners/AbstractVersioner
  */
-var InternalVersioner = inherit(AbstractVersioner);
+var InternalVersioner = inherit(AbstractVersioner, {});
 
-InternalVersioner.prototype.getTaskFiles = function () {
-  grunt.log.debug('Internal Task Mode');
-  grunt.log.debug("Versioning files passed directly to '" + this.targetTask + "' task.");
-  return this.taskContext.files;
+/**
+ * Get target tasks instances
+ * @returns {Array.<Task>}
+ */
+InternalVersioner.prototype.getTargetTasks = function () {
+  return [new TaskClass(this.getAssetsVersioningTaskName(), this.taskData.files)];
 };
 
-InternalVersioner.prototype.getTargetTask = function () {
-  return this.getAssetsVersioningTaskName();
-};
-
-InternalVersioner.prototype.getTargetTaskConfigKey = function () {
-  return this.getAssetsVersioningTaskConfigKey();
+/**
+ * Create a surrogate task
+ * @param {Array} updatedTaskFiles
+ * @returns {surrogateTask}
+ */
+InternalVersioner.prototype.createSurrogateTask = function (updatedTaskFiles) {
+  return { files: updatedTaskFiles };
 };
 
 InternalVersioner.prototype.doVersion = function () {
 
-  this.revFiles.forEach(function (fRev) {
+  if (this.surrogateTasks.length !== 1) {
+    grunt.log.error('There should be only one surrogate task in internal mode.');
+  }
+
+  this.surrogateTasks[0].files.forEach(function (fRev) {
 
     var content = fRev.src.map(function (filepath) {
       return grunt.file.read(filepath);

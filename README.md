@@ -42,7 +42,7 @@ This task will version the files output by the task uglify:targetTask.
 
 ### Options
 
-#### options.use
+#### options.tag
 Type: `String`
 Possible values: `date`, `hash`
 Default value: `hash`
@@ -69,10 +69,10 @@ Only works if you choose to version your files using a date.
 Timezone offset (in hours) to take into account when generating the date version tag. By default, set to 0 (GMT time).
 
 #### options.tasks
-Type: `String` or `Boolean`
+Type: `Array` or `Boolean`
 Default value: `false`
 
-The task you want to run while versioning its destination files.
+The tasks you want to run while versioning their destination files.
 
 #### options.versionsMapFile
 Type: `String`
@@ -154,7 +154,7 @@ dest/bundle.2j4h2kds.js
 grunt.initConfig({
   assets_versioning: {
     options: {
-      use: 'hash',
+      tag: 'hash',
       hashLength: 6,
     },
     files: {
@@ -174,7 +174,7 @@ dest/bundle.20130413004500.js
 grunt.initConfig({
   assets_versioning: {
     options: {
-      use: 'date',
+      tag: 'date',
     },
     files: {
       'dest/bundle.js': ['src/file1.js', 'src/file2.js'],
@@ -188,6 +188,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2014-11-02   v1.0.0   options.tasks accepts multiple.tasks. options.use replaced by options.tag
 * 2014-11-01   v0.6.0   Major refactoring. skipVersioning false by default. options.versionsMapFile replaces options.output
 * 2014-10-12   v0.5.0   Add tasks option that will eventually replace options.multitask and options.multitaskTarget. Only accept a single task so far.
 * 2014-10-11   v0.4.0   Skip task by providing an array of destination files to ignore.

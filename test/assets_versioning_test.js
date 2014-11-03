@@ -225,6 +225,21 @@ exports.assets_versioning = {
     test.done();
   },
 
+  multiple_tasks: function (test) {
+    test.expect(6);
+    var versionsMap = grunt.config.get('assets_versioning.multiple_tasks.versionsMap');
+
+    test.equal(versionsMap.length, 5, 'should accumulate all the files created by all the tasks');
+
+    test.equal(grunt.file.read('tmp/js/multiple_task_2.906eac86.js'), grunt.file.read('test/expected/js/concat_file1_file2_file3.js'));
+    test.equal(grunt.file.read('tmp/js/multiple_task_1_a.3d04f375.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.equal(grunt.file.read('tmp/js/multiple_task_1_b.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+    test.equal(grunt.file.read('tmp/js/multiple_task_3_a.3d04f375.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.equal(grunt.file.read('tmp/js/multiple_task_3_b.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+
+    test.done();
+  },
+
   files_default_behaviour: function (test) {
     test.expect(5);
 
