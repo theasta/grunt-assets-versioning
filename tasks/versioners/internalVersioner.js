@@ -15,6 +15,10 @@ var grunt = require('grunt');
  */
 var InternalVersioner = inherit(AbstractVersioner, {});
 
+InternalVersioner.prototype.initialize = function () {
+  this.surrogateTasks = this.hijackTargetTasks();
+};
+
 /**
  * Get target tasks instances
  * @returns {Array.<Task>}
@@ -33,6 +37,7 @@ InternalVersioner.prototype.createSurrogateTask = function (updatedTaskFiles) {
 };
 
 InternalVersioner.prototype.doVersion = function () {
+  this.saveVersionsMap();
 
   if (this.surrogateTasks.length !== 1) {
     grunt.log.error('There should be only one surrogate task in internal mode.');

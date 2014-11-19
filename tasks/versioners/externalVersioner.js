@@ -6,6 +6,7 @@ var TaskClass = require('../helpers/task');
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
 var grunt = require('grunt');
+var _ = require('lodash');
 
 /**
  * External Task Versioner
@@ -23,6 +24,49 @@ ExternalVersioner.prototype.initialize = function () {
   if (this.taskData.data.files != null) {
     grunt.log.error("Files passed to '" + this.getAssetsVersioningTaskName() + "' won't be versioned.");
   }
+
+  if (this.options.post) {
+    grunt.log.debug("Post Versioning Mode");
+    this.surrogateTasks = this.options.tasks;
+    var filesArray = _.flatten(this.getTargetTasks().map(this.retrieveDestFiles.bind(this)))
+      .map(function (destFile) {
+      return {src: [destFile], dest: destFile};
+    });
+    var task = new TaskClass(this.getAssetsVersioningTaskName(), filesArray);
+    this.surrogateTasks.push(task.createPostVersioningTask(filesArray));
+  } else {
+    this.surrogateTasks = this.hijackTargetTasks();
+  }
+};
+
+ExternalVersioner.prototype.retrieveDestFiles = function (task) {
+  var destFiles = [];
+  task.taskFiles.forEach(function(f, index) {
+
+    grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + task.taskFiles.length);
+
+    var src = f.src.filter(function (file) {
+      return grunt.file.isFile(file);
+    });
+
+    grunt.log.debug('Source files: ', src);
+    if (src.length === 0) {
+      grunt.fail.warn("Task '" + task.taskName + "' has no source files.");
+      grunt.log.debug(JSON.stringify(f.orig));
+      return;
+    }
+
+    if (typeof f.dest !== 'string') {
+      grunt.log.error("Task '" + task.taskName + "' has no destination file.");
+      grunt.log.debug(JSON.stringify(f.orig));
+      return;
+    }
+
+    destFiles.push(f.dest);
+
+  }.bind(this));
+
+  return destFiles;
 };
 
 /**
@@ -39,6 +83,7 @@ ExternalVersioner.prototype.doVersion = function () {
   if (this.options.runTask) {
     grunt.verbose.writeln("Tasks triggered: '" + this.surrogateTasks.join(", ") + "'");
     grunt.task.run(this.surrogateTasks);
+    this.saveVersionsMap();
   }
 };
 

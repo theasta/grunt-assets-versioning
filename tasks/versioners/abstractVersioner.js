@@ -40,13 +40,11 @@ function AbstractVersioner(options, taskData) {
   this.versionTagger = taggers[this.options.tag];
 
   this.initialize();
-
-  /**
-   * Array of surrogate tasks
-   * @type {Array.<surrogateTask>}
-   */
-  this.surrogateTasks = this.getTargetTasks().map(this.hijackTask.bind(this));
 }
+
+AbstractVersioner.prototype.hijackTargetTasks = function () {
+  return this.getTargetTasks().map(this.hijackTask.bind(this));
+};
 
 /**
  * Get the assets versioning task name (for example assets_versioning:mytask)
@@ -72,7 +70,7 @@ AbstractVersioner.prototype.hijackTask = function (task) {
 
   var updatedTaskFiles = [];
   var allVersionedPath = [];
-    task.taskFiles.forEach(function(f, index) {
+  task.taskFiles.forEach(function(f, index) {
 
     grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + task.taskFiles.length);
 
@@ -174,6 +172,10 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
   }
 
   grunt.config.set(this.getAssetsVersioningTaskConfigKey() + '.versionsMap', this.versionsMap);
+  var copyTo = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.versionsMapCopyTo');
+  if (typeof copyTo === 'string') {
+    grunt.config.set(copyTo + '.versionsMap', this.versionsMap);
+  }
 
   grunt.log.debug("Versions Map: ", this.versionsMap);
 };
@@ -191,7 +193,7 @@ AbstractVersioner.prototype.initialize = function () {};
  * @abstract
  * @returns {TaskClass}
  */
-AbstractVersioner.prototype.getTargetTasks = function () {
+AbstractVersioner.prototype.  getTargetTasks = function () {
   throw new Error('Should be implemented by the subclass');
 };
 

@@ -36,6 +36,7 @@ module.exports = function(grunt) {
       versionsMapTrimPath: '',
       versionsMapTemplate: null,
       skipExisting: false,
+      post: false,
       tasks: false,
       runTask: true
     });
@@ -49,8 +50,6 @@ module.exports = function(grunt) {
      * @type {AbstractVersioner}
      */
     var versioner = versionerFactory(options, this);
-
-    versioner.saveVersionsMap();
 
     versioner.doVersion();
 
