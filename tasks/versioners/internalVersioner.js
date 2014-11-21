@@ -39,16 +39,22 @@ InternalVersioner.prototype.createSurrogateTask = function (updatedTaskFiles) {
 InternalVersioner.prototype.doVersion = function () {
   this.saveVersionsMap();
 
+  // if internal task is a post versioning internal task
+  var isPostVersioningTask = !!grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
+
   if (this.surrogateTasks.length !== 1) {
     grunt.log.error('There should be only one surrogate task in internal mode.');
   }
 
   this.surrogateTasks[0].files.forEach(function (fRev) {
-
     // if only one file, copy it
     // otherwise concatenate the content
     if (fRev.src.length === 1) {
       grunt.file.copy(fRev.src[0], fRev.dest);
+      if (isPostVersioningTask) {
+        grunt.file.delete(fRev.src[0]);
+        grunt.log.debug("Deleted intermediate destination file: " + fRev.src[0]);
+      }
     } else {
       var content = fRev.src.map(function (filepath) {
         return grunt.file.read(filepath);

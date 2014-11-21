@@ -62,6 +62,38 @@ AbstractVersioner.prototype.getAssetsVersioningTaskConfigKey = function () {
   return this.taskData.name + '.' + this.taskData.target;
 };
 
+
+/**
+ * Check if task files are valid
+ * @param f
+ * @param task
+ * @param filesMapIndex
+ * @param filesMapLength
+ * @returns {*}
+ */
+AbstractVersioner.prototype.checkFilesObjValidity = function (f, task, filesMapIndex, filesMapLength) {
+  grunt.log.debug("Iterating through file mapping - " + ( filesMapIndex + 1 ) + "/" + filesMapLength);
+
+  var src = f.src.filter(function (file) {
+    return grunt.file.isFile(file);
+  });
+
+  grunt.log.debug('Source files: ', src);
+  if (src.length === 0) {
+    grunt.fail.warn("Task '" + task.taskName + "' has no source files.");
+    grunt.log.debug(JSON.stringify(f.orig));
+    return false;
+  }
+
+  if (typeof f.dest !== 'string') {
+    grunt.log.error("Task '" + task.taskName + "' has no destination file.");
+    grunt.log.debug(JSON.stringify(f.orig));
+    return false;
+  }
+
+  return src;
+};
+
 /**
  * Hijack a task by deducing the versioned name of its destination files and creating a surrogate task
  * @returns {Array.<surrogateTask>} - Array of surrogate tasks objects
@@ -70,30 +102,14 @@ AbstractVersioner.prototype.hijackTask = function (task) {
 
   var updatedTaskFiles = [];
   var allVersionedPath = [];
+
+  var filesMapLength = task.taskFiles.length;
+
   task.taskFiles.forEach(function(f, index) {
+    var src = this.checkFilesObjValidity(f, task, index, filesMapLength);
+    if (!src) { return false; }
 
-    grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + task.taskFiles.length);
-
-    var version;
-    var destFilePath;
-    var src = f.src.filter(function (file) {
-      return grunt.file.isFile(file);
-    });
-
-    grunt.log.debug('Source files: ', src);
-    if (src.length === 0) {
-      grunt.fail.warn("Task '" + task.taskName + "' has no source files.");
-      grunt.log.debug(JSON.stringify(f.orig));
-      return false;
-    }
-
-    if (typeof f.dest !== 'string') {
-      grunt.log.error("Task '" + task.taskName + "' has no destination file.");
-      grunt.log.debug(JSON.stringify(f.orig));
-      return;
-    }
-
-    version = this.versionTagger(src, this.options);
+    var version = this.versionTagger(src, this.options);
     grunt.log.debug('Version tag (' + this.options.tag + '): ' + version);
 
     if (version === '') {
@@ -101,7 +117,7 @@ AbstractVersioner.prototype.hijackTask = function (task) {
       return false;
     }
 
-    destFilePath = this.options.versionize.call(this, f.dest, version);
+    var destFilePath = this.options.versionize.call(this, f.dest, version);
     grunt.log.debug('Destination filename: ' + destFilePath);
 
     // push to the map of versions
@@ -149,7 +165,7 @@ AbstractVersioner.prototype.hijackTask = function (task) {
  * and also optionally to a file
  */
 AbstractVersioner.prototype.saveVersionsMap = function () {
-
+  if (this.options.post) { return; }
   if (typeof this.options.versionsMapFile === "string") {
     var versionsMapContent;
 
@@ -172,9 +188,9 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
   }
 
   grunt.config.set(this.getAssetsVersioningTaskConfigKey() + '.versionsMap', this.versionsMap);
-  var copyTo = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.versionsMapCopyTo');
-  if (typeof copyTo === 'string') {
-    grunt.config.set(copyTo + '.versionsMap', this.versionsMap);
+  var originalTask = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
+  if (typeof originalTask === 'string') {
+    grunt.config.set(originalTask + '.versionsMap', this.versionsMap);
   }
 
   grunt.log.debug("Versions Map: ", this.versionsMap);
@@ -193,7 +209,7 @@ AbstractVersioner.prototype.initialize = function () {};
  * @abstract
  * @returns {TaskClass}
  */
-AbstractVersioner.prototype.  getTargetTasks = function () {
+AbstractVersioner.prototype.getTargetTasks = function () {
   throw new Error('Should be implemented by the subclass');
 };
 

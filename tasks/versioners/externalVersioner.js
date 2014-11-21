@@ -26,46 +26,35 @@ ExternalVersioner.prototype.initialize = function () {
   }
 
   if (this.options.post) {
-    grunt.log.debug("Post Versioning Mode");
+    grunt.log.debug("Post-Versioning Mode");
     this.surrogateTasks = this.options.tasks;
-    var filesArray = _.flatten(this.getTargetTasks().map(this.retrieveDestFiles.bind(this)))
-      .map(function (destFile) {
+
+    var intermediateDestFiles = _.flatten(this.getTargetTasks().map(this.retrieveDestFiles.bind(this)));
+    grunt.log.debug("Retrieved all external tasks destination files: " + intermediateDestFiles.join(', '));
+    var filesArray = intermediateDestFiles.map(function (destFile) {
       return {src: [destFile], dest: destFile};
     });
+
     var task = new TaskClass(this.getAssetsVersioningTaskName(), filesArray);
     this.surrogateTasks.push(task.createPostVersioningTask(filesArray));
   } else {
+    grunt.log.debug("Pre-Versioning Mode");
     this.surrogateTasks = this.hijackTargetTasks();
   }
 };
 
+/**
+ * Retrieve all destination files
+ * @param task
+ * @returns {Array}
+ */
 ExternalVersioner.prototype.retrieveDestFiles = function (task) {
   var destFiles = [];
+  var filesMapLength = task.taskFiles.length;
   task.taskFiles.forEach(function(f, index) {
-
-    grunt.log.debug("Iterating through file mapping - " + ( index + 1 ) + "/" + task.taskFiles.length);
-
-    var src = f.src.filter(function (file) {
-      return grunt.file.isFile(file);
-    });
-
-    grunt.log.debug('Source files: ', src);
-    if (src.length === 0) {
-      grunt.fail.warn("Task '" + task.taskName + "' has no source files.");
-      grunt.log.debug(JSON.stringify(f.orig));
-      return;
-    }
-
-    if (typeof f.dest !== 'string') {
-      grunt.log.error("Task '" + task.taskName + "' has no destination file.");
-      grunt.log.debug(JSON.stringify(f.orig));
-      return;
-    }
-
+    if (!this.checkFilesObjValidity(f, task, index, filesMapLength)) { return false; }
     destFiles.push(f.dest);
-
   }.bind(this));
-
   return destFiles;
 };
 
@@ -79,6 +68,9 @@ ExternalVersioner.prototype.getTargetTasks = function () {
   });
 };
 
+/**
+ * Do the actual versioning
+ */
 ExternalVersioner.prototype.doVersion = function () {
   if (this.options.runTask) {
     grunt.verbose.writeln("Tasks triggered: '" + this.surrogateTasks.join(", ") + "'");

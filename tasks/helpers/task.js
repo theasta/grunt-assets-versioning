@@ -100,7 +100,7 @@ Task.prototype.createPostVersioningTask = function (filesObj) {
   postTaskConfig.options = postTaskConfig.options || {};
   postTaskConfig.options.post = false;
   postTaskConfig.options.tasks = false;
-  postTaskConfig.versionsMapCopyTo = this.getTaskConfigKey();
+  postTaskConfig.isPostVersioningTaskFor = this.getTaskConfigKey();
   postTaskConfig.files = filesObj;
 
   grunt.config.set(taskConfigKey, postTaskConfig);
