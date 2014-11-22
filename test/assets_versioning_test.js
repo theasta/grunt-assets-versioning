@@ -86,19 +86,35 @@ exports.assets_versioning = {
     test.done();
   },
 
-  // hash length should be as specified by options.hashLength
-  options_post: function (test) {
+  options_post_external: function (test) {
     test.expect(5);
 
     test.ok(grunt.file.exists('tmp/js/options_post_a.27951afe.js'), 'should create a versioned file with a different hash');
     test.equal(grunt.file.read('tmp/js/options_post_a.27951afe.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
     test.equal(grunt.file.read('tmp/js/options_post_b.d3be530f.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
-    var versionsMapAlt = grunt.config.get('assets_versioning.options_post_post_assets_versioning.versionsMap');
+
+    var versionsMapAlt = grunt.config.get('assets_versioning.options_post_external_post_assets_versioning.versionsMap');
     test.equal(versionsMapAlt.length, 2, 'map of versions should contain 2 entities');
 
-    var versionsMap = grunt.config.get('assets_versioning.options_post.versionsMap');
+    var versionsMap = grunt.config.get('assets_versioning.options_post_external.versionsMap');
     test.equal(versionsMap.length, 2, 'map of versions should contain 2 entities');
 
+    test.done();
+  },
+
+  options_post_internal: function (test) {
+    test.expect(6);
+
+    test.ok(grunt.file.exists('tmp/js/options_post_internal_a.27951afe.js'), 'should create a versioned file with a different hash');
+    test.equal(grunt.file.read('tmp/js/options_post_internal_a.27951afe.js'), grunt.file.read('test/expected/js/concat_file1_file2.js'));
+    test.ok(grunt.file.exists('tmp/js/options_post_internal_b.d3be530f.js'), 'should create a second versioned file with a different hash');
+    test.equal(grunt.file.read('tmp/js/options_post_internal_b.d3be530f.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
+
+    var versionsMapAlt = grunt.config.get('assets_versioning.options_post_internal_post_assets_versioning.versionsMap');
+    test.equal(versionsMapAlt.length, 2, 'map of versions should contain 2 entities');
+
+    var versionsMap = grunt.config.get('assets_versioning.options_post_internal.versionsMap');
+    test.equal(versionsMap.length, 2, 'map of versions should contain 2 entities');
 
     test.done();
   },

@@ -25,37 +25,15 @@ ExternalVersioner.prototype.initialize = function () {
     grunt.log.error("Files passed to '" + this.getAssetsVersioningTaskName() + "' won't be versioned.");
   }
 
-  if (this.options.post) {
-    grunt.log.debug("Post-Versioning Mode");
-    this.surrogateTasks = this.options.tasks;
-
-    var intermediateDestFiles = _.flatten(this.getTargetTasks().map(this.retrieveDestFiles.bind(this)));
-    grunt.log.debug("Retrieved all external tasks destination files: " + intermediateDestFiles.join(', '));
-    var filesArray = intermediateDestFiles.map(function (destFile) {
-      return {src: [destFile], dest: destFile};
-    });
-
-    var task = new TaskClass(this.getAssetsVersioningTaskName(), filesArray);
-    this.surrogateTasks.push(task.createPostVersioningTask(filesArray));
-  } else {
-    grunt.log.debug("Pre-Versioning Mode");
-    this.surrogateTasks = this.hijackTargetTasks();
-  }
+  this.setSurrogateTasks();
 };
 
 /**
- * Retrieve all destination files
- * @param task
- * @returns {Array}
+ * get Post Versioning Tasks
+ * @returns {*}
  */
-ExternalVersioner.prototype.retrieveDestFiles = function (task) {
-  var destFiles = [];
-  var filesMapLength = task.taskFiles.length;
-  task.taskFiles.forEach(function(f, index) {
-    if (!this.checkFilesObjValidity(f, task, index, filesMapLength)) { return false; }
-    destFiles.push(f.dest);
-  }.bind(this));
-  return destFiles;
+ExternalVersioner.prototype.getPostVersioningSurrogateTasks = function () {
+  return this.options.tasks.concat([this.createPostVersioningTask()]);
 };
 
 /**

@@ -16,7 +16,13 @@ var grunt = require('grunt');
 var InternalVersioner = inherit(AbstractVersioner, {});
 
 InternalVersioner.prototype.initialize = function () {
-  this.surrogateTasks = this.hijackTargetTasks();
+  // if internal task is a post versioning internal task
+  //this.isPostVersioningTask = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
+  this.setSurrogateTasks();
+};
+
+InternalVersioner.prototype.getPostVersioningSurrogateTasks = function () {
+  return [this.createPostVersioningTask()];
 };
 
 /**
@@ -36,36 +42,47 @@ InternalVersioner.prototype.createSurrogateTask = function (updatedTaskFiles) {
   return { files: updatedTaskFiles };
 };
 
+/**
+ * Copy or concat files
+ * @param files
+ * @private
+ */
+InternalVersioner.prototype._copyOrConcat = function (files) {
+  files.forEach(function (filesObj)  {
+    // if only one file, copy it
+    // otherwise concatenate the content
+    if (filesObj.src.length === 1) {
+      grunt.file.copy(filesObj.src[0], filesObj.dest);
+      if (this.isPostVersioningTask) {
+        grunt.file.delete(filesObj.src[0]);
+        grunt.log.debug("Deleted intermediate destination file: " + filesObj.src[0]);
+      }
+    } else {
+      var content = filesObj.src.map(function (filepath) {
+        return grunt.file.read(filepath);
+      }).join(grunt.util.linefeed);
+
+      grunt.file.write(filesObj.dest, content);
+    }
+
+    grunt.log.writeln('File ' + filesObj.dest + ' created.');
+
+  }, this);
+};
+
 InternalVersioner.prototype.doVersion = function () {
   this.saveVersionsMap();
-
-  // if internal task is a post versioning internal task
-  var isPostVersioningTask = !!grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
 
   if (this.surrogateTasks.length !== 1) {
     grunt.log.error('There should be only one surrogate task in internal mode.');
   }
 
-  this.surrogateTasks[0].files.forEach(function (fRev) {
-    // if only one file, copy it
-    // otherwise concatenate the content
-    if (fRev.src.length === 1) {
-      grunt.file.copy(fRev.src[0], fRev.dest);
-      if (isPostVersioningTask) {
-        grunt.file.delete(fRev.src[0]);
-        grunt.log.debug("Deleted intermediate destination file: " + fRev.src[0]);
-      }
-    } else {
-      var content = fRev.src.map(function (filepath) {
-        return grunt.file.read(filepath);
-      }).join(grunt.util.linefeed);
-
-      grunt.file.write(fRev.dest, content);
-    }
-
-    grunt.log.writeln('File ' + fRev.dest + ' created.');
-
-  });
+  if (this.options.post) {
+    this._copyOrConcat(this.getTargetTasks()[0].taskFiles);
+    grunt.task.run(this.surrogateTasks);
+  } else {
+    this._copyOrConcat(this.surrogateTasks[0].files);
+  }
 
 };
 

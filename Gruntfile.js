@@ -104,7 +104,7 @@ module.exports = function(grunt) {
           'tmp/js/skip_existing_array_2.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       },
-      options_post: {
+      options_post_external: {
         options: {
           post: true,
           tasks: [
@@ -112,6 +112,15 @@ module.exports = function(grunt) {
             'concat:options_post_2'
           ]
         }
+      },
+      options_post_internal: {
+        options: {
+          post: true
+        },
+        files: [
+          { src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/options_post_internal_a.js' },
+          { src: ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js'], dest: 'tmp/js/options_post_internal_b.js' }
+        ]
       },
       options_versionsMapFile: {
         files: [{
@@ -421,7 +430,8 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_true',
     'assets_versioning:options_skipExisting_false',
     'assets_versioning:options_skipExisting_array',
-    'assets_versioning:options_post',
+    'assets_versioning:options_post_external',
+    'assets_versioning:options_post_internal',
     'assets_versioning:options_versionsMapFile',
     'assets_versioning:output_versionsMapTrimPath',
     'assets_versioning:options_versionsMapTemplate',
@@ -435,7 +445,8 @@ module.exports = function(grunt) {
     'assets_versioning:task_files_expand_format',
     'assets_versioning:multiple_tasks',
     'assets_versioning:files_default_behaviour',
-    'nodeunit']);
+    'nodeunit'
+  ]);
 
   grunt.registerTask('fail', [
     'assets_versioning:fail_no_src',
