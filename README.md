@@ -167,6 +167,33 @@ Default value: `false`
 If true, will skip the task if the destination file already exists.
 If type Array, will skip the task if the destination file, once versioned, is listed in the array.
 
+#### options.post
+Type: `Boolean`
+Default value: `false`
+
+By default, the grunt-assets-versioning task uses the content of the source files to create a version hash.
+Combined with the skipExisting option, it allows to speed up the deployment process by skipping tasks that would output an already-existing destination file.
+
+If ever you're trying to version a task that doesn't expose all its source files but only an entry point (less, requirejs), you should set the post options to true.
+
+```
+less: {
+  production: {
+    files: {
+      "path/to/result.css": "path/to/source.less"
+    }
+  }
+},
+assets_versioning: {
+  css: {
+    options: {
+      post: true,
+      tasks: ["less:production"]
+    }
+  }
+}
+```
+
 ### Usage Examples
 
 #### Versioning using a hash
