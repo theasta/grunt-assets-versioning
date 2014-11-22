@@ -4,6 +4,7 @@
 
 var grunt = require('grunt');
 var surrogateSuffix = '_assets_versioning';
+var postSuffix = '_post_assets_versioning';
 
 /**
  * Create a task instance
@@ -77,6 +78,36 @@ Task.prototype.createSurrogate = function (filesObj) {
   grunt.log.debug(surrogateTaskConfig);
 
   return surrogateTask;
+};
+
+/**
+ *
+ * @param {Array} filesObj
+ * @returns {string}
+ */
+Task.prototype.createPostVersioningTask = function (filesObj) {
+  var postTask = this.taskName + postSuffix;
+  var taskConfigKey = this.getTaskConfigKey(postTask);
+
+  if (grunt.config(taskConfigKey)) {
+    grunt.fail.warn("Task '" + postTask + "' already exists!");
+  }
+
+  var postTaskConfig = this.taskConfig;
+  // remove src & dest keys as they take precedence over the files key
+  delete postTaskConfig.src;
+  delete postTaskConfig.dest;
+  postTaskConfig.options = postTaskConfig.options || {};
+  postTaskConfig.options.post = false;
+  postTaskConfig.options.tasks = false;
+  postTaskConfig.isPostVersioningTaskFor = this.getTaskConfigKey();
+  postTaskConfig.files = filesObj;
+
+  grunt.config.set(taskConfigKey, postTaskConfig);
+  grunt.log.debug("Created versioningTask '" + taskConfigKey + "'");
+  grunt.log.debug(postTaskConfig);
+
+  return this.taskName + postSuffix;
 };
 
 

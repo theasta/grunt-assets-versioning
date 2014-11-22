@@ -104,6 +104,15 @@ module.exports = function(grunt) {
           'tmp/js/skip_existing_array_2.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       },
+      options_post: {
+        options: {
+          post: true,
+          tasks: [
+            'concat:options_post_1',
+            'concat:options_post_2'
+          ]
+        }
+      },
       options_versionsMapFile: {
         files: [{
           expand : true,
@@ -309,7 +318,18 @@ module.exports = function(grunt) {
           dest   : "tmp/task_files_expand_format/"
         }]
       },
-      fail_mix_files_task: {}
+      fail_mix_files_task: {},
+      options_post_1: {
+        files: {
+          'tmp/js/options_post_a.js': ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js']
+        }
+      },
+      options_post_2: {
+        files: {
+          'tmp/js/options_post_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
+        }
+      }
+
     },
 
     // Unit tests.
@@ -401,6 +421,7 @@ module.exports = function(grunt) {
     'assets_versioning:options_skipExisting_true',
     'assets_versioning:options_skipExisting_false',
     'assets_versioning:options_skipExisting_array',
+    'assets_versioning:options_post',
     'assets_versioning:options_versionsMapFile',
     'assets_versioning:output_versionsMapTrimPath',
     'assets_versioning:options_versionsMapTemplate',
