@@ -5,6 +5,7 @@
 var grunt = require('grunt');
 var taggers = require('../taggers');
 var _ = require('lodash');
+var TaskClass = require('../helpers/task');
 
 /**
  * A grunt files configuration object
@@ -39,11 +40,57 @@ function AbstractVersioner(options, taskData) {
    */
   this.versionTagger = taggers[this.options.tag];
 
-  this.initialize();
+  // is task a post versioning task?
+  this.isPostVersioningTask = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
 }
 
-AbstractVersioner.prototype.hijackTargetTasks = function () {
-  return this.getTargetTasks().map(this.hijackTask.bind(this));
+/**
+ * Initiliaze the task
+ * @abstract
+ */
+AbstractVersioner.prototype.initialize = function () {};
+
+/**
+ * Set the property surrogateTasks
+ */
+AbstractVersioner.prototype.setSurrogateTasks = function () {
+  if (this.options.post) {
+    grunt.log.debug("Post-Versioning Mode");
+    this.surrogateTasks = this.getPostVersioningSurrogateTasks();
+  } else {
+    grunt.log.debug("Pre-Versioning Mode");
+    this.surrogateTasks = this.getPreVersioningSurrogateTasks();
+  }
+};
+
+/**
+ * Create or gather all Surrogate Tasks for the post versioning mode
+ * @abstract
+ */
+AbstractVersioner.prototype.getPostVersioningSurrogateTasks = function () {
+  throw new Error('Should be implemented by the subclass');
+};
+
+/**
+ * Create or gather all surrogate tasks for the pre versioning mode
+ * @returns {Array} Array of tasks names
+ */
+AbstractVersioner.prototype.getPreVersioningSurrogateTasks = function () {
+  return this.getTargetTasks().map(this.createPreVersioningSurrogateTask.bind(this));
+};
+
+/**
+ * Create the Post Versioning Task
+ * @returns {string}
+ */
+AbstractVersioner.prototype.createPostVersioningTask = function () {
+  var intermediateDestFiles = _.flatten(this.getTargetTasks().map(this.retrieveDestFiles.bind(this)));
+  grunt.log.debug("Retrieved all destination files: " + intermediateDestFiles.join(', '));
+  var filesArray = intermediateDestFiles.map(function (destFile) {
+    return {src: [destFile], dest: destFile};
+  });
+  var task = new TaskClass(this.getAssetsVersioningTaskName(), filesArray);
+  return task.createPostVersioningTask(filesArray);
 };
 
 /**
@@ -61,7 +108,6 @@ AbstractVersioner.prototype.getAssetsVersioningTaskName = function () {
 AbstractVersioner.prototype.getAssetsVersioningTaskConfigKey = function () {
   return this.taskData.name + '.' + this.taskData.target;
 };
-
 
 /**
  * Check if task files are valid
@@ -95,10 +141,25 @@ AbstractVersioner.prototype.checkFilesObjValidity = function (filesObj, task, fi
 };
 
 /**
- * Hijack a task by deducing the versioned name of its destination files and creating a surrogate task
+ * Retrieve all destination files
+ * @param task
+ * @returns {Array}
+ */
+AbstractVersioner.prototype.retrieveDestFiles = function (task) {
+  var destFiles = [];
+  var filesMapLength = task.taskFiles.length;
+  task.taskFiles.forEach(function(f, index) {
+    if (!this.checkFilesObjValidity(f, task, index, filesMapLength)) { return false; }
+    destFiles.push(f.dest);
+  }.bind(this));
+  return destFiles;
+};
+
+/**
+ * Create a Pre Versioning Surrogate Task by deducing the versioned name of its destination files and creating a surrogate task
  * @returns {Array.<surrogateTask>} - Array of surrogate tasks objects
  */
-AbstractVersioner.prototype.hijackTask = function (task) {
+AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
 
   var updatedTaskFiles = [];
   var allVersionedPath = [];
@@ -188,9 +249,13 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
   }
 
   grunt.config.set(this.getAssetsVersioningTaskConfigKey() + '.versionsMap', this.versionsMap);
-  var originalTask = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
-  if (typeof originalTask === 'string') {
-    grunt.config.set(originalTask + '.versionsMap', this.versionsMap);
+  //var originalTask = grunt.config(this.getAssetsVersioningTaskConfigKey() + '.isPostVersioningTaskFor');
+  //if (typeof originalTask === 'string') {
+  //  grunt.config.set(originalTask + '.versionsMap', this.versionsMap);
+  //}
+
+  if (typeof this.isPostVersioningTask  === 'string') {
+    grunt.config.set(this.isPostVersioningTask + '.versionsMap', this.versionsMap);
   }
 
   grunt.log.debug("Versions Map: ", this.versionsMap);
@@ -198,11 +263,7 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
 
 /* ---- ABSTRACT METHODS ---- */
 
-/**
- * Initiliaze the task
- * @abstract
- */
-AbstractVersioner.prototype.initialize = function () {};
+
 
 /**
  * Get target tasks instances

@@ -51,6 +51,7 @@ module.exports = function(grunt) {
      */
     var versioner = versionerFactory(options, this);
 
+    versioner.initialize();
     versioner.doVersion();
 
     done();

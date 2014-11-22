@@ -75,7 +75,7 @@ Task.prototype.createSurrogate = function (filesObj) {
 
   grunt.config.set(surrogateTaskConfigKey, surrogateTaskConfig);
   grunt.log.debug("Created surrogateTask '" + surrogateTaskConfigKey + "'");
-  grunt.log.debug(surrogateTaskConfig);
+  grunt.log.debug("Surrogate Task config: " + JSON.stringify(surrogateTaskConfig));
 
   return surrogateTask;
 };
@@ -104,8 +104,8 @@ Task.prototype.createPostVersioningTask = function (filesObj) {
   postTaskConfig.files = filesObj;
 
   grunt.config.set(taskConfigKey, postTaskConfig);
-  grunt.log.debug("Created versioningTask '" + taskConfigKey + "'");
-  grunt.log.debug(postTaskConfig);
+  grunt.log.debug("Created Post Versioning Task '" + taskConfigKey + "'");
+  grunt.log.debug("Post Versioning Task config: " + JSON.stringify(postTaskConfig));
 
   return this.taskName + postSuffix;
 };
