@@ -45,6 +45,10 @@ module.exports = function(grunt) {
       grunt.fail.warn('Invalid argument : options.tag should be equal to date or hash', 1);
     }
 
+    if (options.post && options.skipExisting) {
+      grunt.fail.fatal("To work, the option skipExisting needs the post option to be false. Please update your configuration to have either post or skipExisting set to false.")
+    }
+
     /**
      * Create a concrete versioner instance
      * @type {AbstractVersioner}

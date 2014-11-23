@@ -127,7 +127,6 @@ exports.assets_versioning = {
     test.deepEqual(JSON.parse(actual), JSON.parse(expected), 'should create a json file with proper data');
 
     test.done();
-
   },
 
   output_versionsMapTrimPath: function (test) {
@@ -138,7 +137,6 @@ exports.assets_versioning = {
     test.deepEqual(actual, expected, 'should create a json file with proper data');
 
     test.done();
-
   },
 
   options_versionsMapTemplate: function (test) {
@@ -202,6 +200,14 @@ exports.assets_versioning = {
     test.ok(!grunt.file.exists('tmp/files_expand_format/folder/img2.gif'), 'should not create an un-versioned img2.gif');
     test.ok(grunt.file.exists('tmp/files_expand_format/folder/img2.05953adc.gif'), 'should create a versioned img2.gif');
 
+    test.done();
+  },
+
+  files_expand_format_directory: function(test) {
+    test.expect(1);
+
+    var versionsMap = grunt.config.get('assets_versioning.files_expand_format_directory.versionsMap');
+    test.equal(versionsMap.length, 5, 'map of versions should contain 5 entities');
 
     test.done();
   },
@@ -308,7 +314,6 @@ exports.assets_versioning = {
     test.equal(grunt.file.read('tmp/js/default_b.bfcf287e.js'), grunt.file.read('test/expected/js/concat_file3_file4.js'));
 
     test.done();
-
   },
 
   fails: function (test) {
@@ -325,7 +330,6 @@ exports.assets_versioning = {
     test.throws(function () {
       grunt.run.task('assets_versioning:fail_no_files');
     }, 'error', 'It should throw an error if no source files are defined');
-
 
     test.done();
   }
