@@ -238,6 +238,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2014-11-22   v1.0.2   Add a post mode which generates the version hash based on the destination files and not the source files.
 * 2014-11-02   v1.0.1   Add the ability to generate a version map based on a lo-dash template
 * 2014-11-02   v1.0.0   options.tasks accepts multiple.tasks. options.use replaced by options.tag
 * 2014-11-01   v0.6.0   Major refactoring. skipVersioning false by default. options.versionsMapFile replaces options.output
