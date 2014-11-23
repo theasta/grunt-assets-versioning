@@ -145,7 +145,6 @@ module.exports = function(grunt) {
           versionsMapTrimPath : 'tmp/options_output_trim/'
         }
       },
-
       options_versionsMapTemplate: {
         files: [{
           expand : true,
@@ -159,7 +158,6 @@ module.exports = function(grunt) {
           versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
         }
       },
-
       files_compact_format: {
         src: [
           'test/fixtures/js/file1.js',
@@ -186,6 +184,14 @@ module.exports = function(grunt) {
           cwd    : "test/fixtures/images/",
           src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
           dest   : "tmp/files_expand_format/"
+        }]
+      },
+      files_expand_format_directory: {
+        files: [{
+          expand : true,
+          cwd    : "test/fixtures/images",
+          src    : ['**/*'],
+          dest   : "tmp/task_files_expand_format_directory/"
         }]
       },
       task_files_compact_format: {
@@ -223,42 +229,34 @@ module.exports = function(grunt) {
           'tmp/js/default_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       },
-
       fail_surrogate_already_exists: {
         options: {
           tasks: ['concat:fail_surrogate_already_exists']
         }
       },
-
       fail_duplicate_destination_files: {
         files: [
           { src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/duplicate_file.js' },
           { src: ['test/fixtures/js/file1.js', 'test/fixtures/js/file2.js'], dest: 'tmp/js/duplicate_file.js' }
         ]
       },
-
       fail_no_valid_files: {
         'tmp/js/no_file/no_file.js': ['test/fixtures/js/file2.js']
       },
-
       fail_no_files: {},
-
       fail_no_valid_external_task: {
         options: {
           task: ['dontexist']
         }
       },
-
       fail_no_src: {
         files: {
           'tmp/js/whatever.js': ['test/fixtures/js/']
         }
       },
-
       fail_no_dest: {
         src: ['test/fixtures/js/file2.js']
       },
-
       fail_mix_files_task: {
         options: {
           tasks: ['concat:fail_mix_files_task']
@@ -266,8 +264,16 @@ module.exports = function(grunt) {
         files: {
           'tmp/fail_mix_files_task.js':  'test/fixtures/js/file3.js'
         }
+      },
+      fail_skipexisting_post_conflict: {
+        options: {
+          skipExisting: true,
+          post: true
+        },
+        files: {
+          'tmp/fail_skipexisting_post_conflict.js':  'test/fixtures/js/file3.js'
+        }
       }
-
     },
 
     concat: {
@@ -338,7 +344,6 @@ module.exports = function(grunt) {
           'tmp/js/options_post_b.js': ['test/fixtures/js/file3.js', 'test/fixtures/js/file4.js']
         }
       }
-
     },
 
     // Unit tests.
@@ -439,6 +444,7 @@ module.exports = function(grunt) {
     'assets_versioning:files_object_format',
     'assets_versioning:files_array_format',
     'assets_versioning:files_expand_format',
+    'assets_versioning:files_expand_format_directory',
     'assets_versioning:task_files_compact_format',
     'assets_versioning:task_files_object_format',
     'assets_versioning:task_files_array_format',
@@ -456,7 +462,8 @@ module.exports = function(grunt) {
     'assets_versioning:fail_mix_files_task',
     'assets_versioning:fail_surrogate_already_exists',
     'assets_versioning:fail_duplicate_destination_files',
-    'assets_versioning:fail_no_valid_external_task'
+    'assets_versioning:fail_no_valid_external_task',
+    'assets_versioning:fail_skipexisting_post_conflict'
   ]);
 
   // By default, lint and run all tests.

@@ -112,12 +112,11 @@ AbstractVersioner.prototype.getAssetsVersioningTaskConfigKey = function () {
 /**
  * Check if task files are valid
  * @param filesObj
- * @param task
  * @param filesMapIndex
  * @param filesMapLength
  * @returns {*}
  */
-AbstractVersioner.prototype.checkFilesObjValidity = function (filesObj, task, filesMapIndex, filesMapLength) {
+AbstractVersioner.prototype.checkFilesObjValidity = function (filesObj, filesMapIndex, filesMapLength) {
   grunt.log.debug("Iterating through file mapping - " + ( filesMapIndex + 1 ) + "/" + filesMapLength);
 
   var src = filesObj.src.filter(function (file) {
@@ -126,13 +125,11 @@ AbstractVersioner.prototype.checkFilesObjValidity = function (filesObj, task, fi
 
   grunt.log.debug('Source files: ', src);
   if (src.length === 0) {
-    grunt.fail.warn("Task '" + task.taskName + "' has no source files.");
     grunt.log.debug(JSON.stringify(filesObj.orig));
     return false;
   }
 
   if (typeof filesObj.dest !== 'string') {
-    grunt.log.error("Task '" + task.taskName + "' has no destination file.");
     grunt.log.debug(JSON.stringify(filesObj.orig));
     return false;
   }
@@ -149,9 +146,12 @@ AbstractVersioner.prototype.retrieveDestFiles = function (task) {
   var destFiles = [];
   var filesMapLength = task.taskFiles.length;
   task.taskFiles.forEach(function(f, index) {
-    if (!this.checkFilesObjValidity(f, task, index, filesMapLength)) { return false; }
+    if (!this.checkFilesObjValidity(f, index, filesMapLength)) { return false; }
     destFiles.push(f.dest);
   }.bind(this));
+  if (destFiles.length === 0) {
+    grunt.fail.warn("Task '" + task.taskName + "' has no destination files!");
+  }
   return destFiles;
 };
 
@@ -165,10 +165,13 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
   var allVersionedPath = [];
 
   var filesMapLength = task.taskFiles.length;
-
+  var filesMapSkipCount = 0;
   task.taskFiles.forEach(function(taskFilesObj, index) {
-    var src = this.checkFilesObjValidity(taskFilesObj, task, index, filesMapLength);
-    if (!src) { return false; }
+    var src = this.checkFilesObjValidity(taskFilesObj, index, filesMapLength);
+    if (!src) {
+      filesMapSkipCount++;
+      return false;
+    }
 
     var version = this.versionTagger(src, this.options);
     grunt.log.debug('Version tag (' + this.options.tag + '): ' + version);
@@ -215,6 +218,10 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
     updatedTaskFiles.push({ src: src, dest: destFilePath });
 
   }.bind(this));
+
+  if (filesMapSkipCount === filesMapLength) {
+    grunt.fail.warn("File configuration for Task '" + task.taskName + "' is incorrect. Missing valid source files and/or destination files!");
+  }
 
   grunt.log.debug("Versioned Files Object: ", updatedTaskFiles);
 
