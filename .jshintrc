@@ -11,5 +11,6 @@
   "eqnull": true,
   "laxcomma": false,
   "node": true,
-  "strict": false
+  "strict": false,
+   "es5": true
 }
