@@ -84,7 +84,7 @@ The assets versioning files outputs a map of versions of all the files processed
   {
     version: '3d04f375',
     originalPath: 'path/to/bundle-a.js',
-    versionedPath: 'path/to/bundle_a.3d04f375.js'
+    versionedPath: 'path/to/bundle-a.3d04f375.js'
   },
   {
     version: '92jdi2j1',
