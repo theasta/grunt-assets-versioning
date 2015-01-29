@@ -46,7 +46,7 @@ module.exports = function(grunt) {
     }
 
     if (options.post && options.skipExisting) {
-      grunt.fail.fatal("To work, the option skipExisting needs the post option to be false. Please update your configuration to have either post or skipExisting set to false.")
+      grunt.fail.fatal("To work, the option skipExisting needs the post option to be false. Please update your configuration to have either post or skipExisting set to false.");
     }
 
     /**

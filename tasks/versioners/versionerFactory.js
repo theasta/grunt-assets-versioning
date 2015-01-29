@@ -23,7 +23,7 @@ module.exports = function (options, taskData) {
     Versioner = ExternalVersioner;
   } else {
     grunt.log.debug('Internal Task Mode');
-    if (options.tasks) grunt.log.warn("'tasks' option ignored: it can only be an array!");
+    if (options.tasks) { grunt.log.warn("'tasks' option ignored: it can only be an array!"); }
     Versioner = InternalVersioner;
   }
 
