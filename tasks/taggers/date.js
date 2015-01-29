@@ -17,6 +17,6 @@ module.exports = function (src, options) {
   var lastMtime = src.map(function(filepath){
     return +fs.statSync(filepath).mtime;
   }).sort().pop();
-  return moment(lastMtime).zone(options.timezoneOffset).format(options.dateFormat);
+  return moment(lastMtime).utcOffset(-options.timezoneOffset).format(options.dateFormat);
 
 };
