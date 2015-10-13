@@ -6,6 +6,7 @@ var grunt = require('grunt');
 var taggers = require('../taggers');
 var _ = require('lodash');
 var TaskClass = require('../helpers/task');
+var slash = require('slash');
 
 /**
  * A grunt files configuration object
@@ -194,7 +195,7 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
       this.versionsMap.push({
         version: version,
         originalPath: taskFilesObj.dest.replace(this.options.versionsMapTrimPath, ''),
-        versionedPath: versionedPath
+        versionedPath: slash(versionedPath)
       });
     }
 
