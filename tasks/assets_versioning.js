@@ -38,7 +38,8 @@ module.exports = function(grunt) {
       skipExisting: false,
       post: false,
       tasks: false,
-      runTask: true
+      runTask: true,
+      version: '1'
     });
 
     if (!_.contains(['hash', 'date'], options.tag)) {
