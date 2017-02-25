@@ -25,12 +25,12 @@ module.exports = function(grunt) {
       dateFormat: 'YYYYMMDDHHmmss',
       timezoneOffset: 0,
       versionize: function(destPath, version) {
-        return path.dirname(destPath) +
-          path.sep +
-          path.basename(destPath, path.extname(destPath)) +
-          '.'+
-          version +
-          path.extname(destPath);
+        var dir = path.dirname(destPath);
+        var base = path.basename(destPath);
+        var name = base.substring(0, base.indexOf('.'));
+        var ext = base.substring(base.indexOf('.'));
+
+        return dir + path.sep + name + '.' + version + ext;
       },
       versionsMapFile: null,
       versionsMapTrimPath: '',
