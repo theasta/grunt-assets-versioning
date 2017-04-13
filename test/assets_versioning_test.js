@@ -139,14 +139,44 @@ exports.assets_versioning = {
     test.done();
   },
 
-  options_versionsMapTemplate: function (test) {
-    test.expect(1);
+  options_versionsMapTemplateFail: function (test) {
+      test.expect(1);
 
-    var actual = grunt.file.read('tmp/options_versionsMapTemplate.php');
-    var expected = grunt.file.read('test/expected/output/dict.php');
-    test.equal(actual, expected, 'should create a file using a template and the versions map data');
+      var actual = grunt.util.normalizelf(grunt.file.read('tmp/options_versionsMapTemplateFail.php'));
+      var expected = grunt.util.normalizelf(grunt.file.read('test/expected/output/options_output_trim.json'));
+      test.equal(actual, expected, 'should create a file using the default JSON template and the versions map data');
 
-    test.done();
+      test.done();
+  },
+
+  options_versionsMapTemplateFile: function (test) {
+      test.expect(1);
+
+      var actual = grunt.util.normalizelf(grunt.file.read('tmp/options_versionsMapTemplateFile.php'));
+      var expected = grunt.util.normalizelf(grunt.file.read('test/expected/output/dict.php'));
+      test.equal(actual, expected, 'should create a file using a template from a file and the versions map data');
+
+      test.done();
+  },
+
+  options_versionsMapTemplateString: function (test) {
+      test.expect(1);
+
+      var actual = grunt.util.normalizelf(grunt.file.read('tmp/options_versionsMapTemplateString.php'));
+      var expected = grunt.util.normalizelf(grunt.file.read('test/expected/output/dict.php'));
+      test.equal(actual, expected, 'should create a file using a template from the provided string and the versions map data');
+
+      test.done();
+  },
+
+  options_versionsMapTemplateFunction: function (test) {
+      test.expect(1);
+
+      var actual = grunt.util.normalizelf(grunt.file.read('tmp/options_versionsMapTemplateFunction.php'));
+      var expected = grunt.util.normalizelf(grunt.file.read('test/expected/output/dict.php'));
+      test.equal(actual, expected, 'should create a file using a template returned by the function and the versions map data');
+
+      test.done();
   },
 
   files_compact_format: function(test) {
