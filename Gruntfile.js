@@ -145,18 +145,59 @@ module.exports = function(grunt) {
           versionsMapTrimPath : 'tmp/options_output_trim/'
         }
       },
-      options_versionsMapTemplate: {
-        files: [{
-          expand : true,
-          cwd    : "test/fixtures/images/",
-          src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
-          dest   : "tmp/options_versionsMapTemplate/"
-        }],
-        options: {
-          versionsMapFile     : 'tmp/options_versionsMapTemplate.php',
-          versionsMapTemplate : 'test/fixtures/templates/php.tpl',
-          versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
-        }
+      options_versionsMapTemplateFail: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+              versionsMapFile     : 'tmp/options_versionsMapTemplateFail.php',
+              versionsMapTemplate : 'test/fixtures/templates/php.tpl.missing',
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
+      },
+      options_versionsMapTemplateFile: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+              versionsMapFile     : 'tmp/options_versionsMapTemplateFile.php',
+              versionsMapTemplate : 'test/fixtures/templates/php.tpl',
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
+      },
+      options_versionsMapTemplateString: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+	          delimiters          : 'altDelimiters',
+              versionsMapFile     : 'tmp/options_versionsMapTemplateString.php',
+              versionsMapTemplate : encodeURI('<?php\r\n\r\nclass MyDict\r\n{\r\n  public static $myDict = array(\r\n<% _.forEach(files, function(file) { %>\r\n    \"<%= file.originalPath %>\" => \"<%= file.versionedPath %>\",\r\n<% }); %>\r\n  );\r\n}\r\n'),
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
+      },
+      options_versionsMapTemplateFunction: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+              delimiters          : 'altDelimiters',
+              versionsMapFile     : 'tmp/options_versionsMapTemplateFunction.php',
+              versionsMapTemplate : function () { return encodeURI('<?php\r\n\r\nclass MyDict\r\n{\r\n  public static $myDict = array(\r\n<% _.forEach(files, function(file) { %>\r\n    \"<%= file.originalPath %>\" => \"<%= file.versionedPath %>\",\r\n<% }); %>\r\n  );\r\n}\r\n'); },
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
       },
       files_compact_format: {
         src: [
@@ -439,7 +480,10 @@ module.exports = function(grunt) {
     'assets_versioning:options_post_internal',
     'assets_versioning:options_versionsMapFile',
     'assets_versioning:output_versionsMapTrimPath',
-    'assets_versioning:options_versionsMapTemplate',
+    'assets_versioning:options_versionsMapTemplateFail',
+    'assets_versioning:options_versionsMapTemplateFile',
+    'assets_versioning:options_versionsMapTemplateString',
+    'assets_versioning:options_versionsMapTemplateFunction',
     'assets_versioning:files_compact_format',
     'assets_versioning:files_object_format',
     'assets_versioning:files_array_format',

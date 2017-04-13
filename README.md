@@ -1,5 +1,5 @@
-# grunt-assets-versioning [![Build Status](https://travis-ci.org/theasta/grunt-assets-versioning.svg?branch=master)](https://travis-ci.org/theasta/grunt-assets-versioning) [![NPM version](https://badge.fury.io/js/grunt-assets-versioning.svg)](http://badge.fury.io/js/grunt-assets-versioning)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/theasta/grunt-assets-versioning?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# grunt-assets-versioning
+[![Build Status](https://travis-ci.org/theasta/grunt-assets-versioning.svg?branch=master)](https://travis-ci.org/theasta/grunt-assets-versioning) [![NPM version](https://badge.fury.io/js/grunt-assets-versioning.svg)](http://badge.fury.io/js/grunt-assets-versioning) [![dependencies](https://david-dm.org/theasta/grunt-assets-versioning.svg)](https://david-dm.org/theasta/grunt-assets-versioning.svg) [![devDependencies](https://david-dm.org/theasta/grunt-assets-versioning/dev-status.svg)](https://david-dm.org/theasta/grunt-assets-versioning/dev-status.svg) [![peerDependencies](https://david-dm.org/theasta/grunt-assets-versioning/peer-status.svg)](https://david-dm.org/theasta/grunt-assets-versioning/peer-status.svg) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/theasta/grunt-assets-versioning?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Versioning static assets with Grunt
 
@@ -99,12 +99,12 @@ By default you can retrieve the map of versions by accessing this configuration 
 The versionsMapFile gives you the possibility to also output that map to a file.
 
 #### options.versionsMapTemplate
-Type: `String`
+Type: `String` or `Function: String`
 Default value: `null`
 
-Path to a lodash template file that is going to be used to generate the versions map file (options.versionsMapFile)
+Path to a lodash template file or URL-encoded string, optionally returned by a function, that is going to be used to generate the versions map file (options.versionsMapFile).
 
-By default, when no template is indicated, the task will output a json file.
+By default, when no valid template is indicated, the task will output a json file.
 
 The lo-dash template may reuse the keys from the version maps (version, originalPath, versionedPath).
 Here's an example of a lo-dash template to generate a php dictionary.
@@ -238,6 +238,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2017-04-10   v1.1.0   Add support for templates from strings
 * 2015-01-29   v1.0.4   Fix MomentJS warning
 * 2015-01-28   v1.0.3   Bug fixing.
 * 2014-11-22   v1.0.2   Add a post mode which generates the version hash based on the destination files and not the source files.
