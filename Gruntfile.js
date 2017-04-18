@@ -49,6 +49,16 @@ module.exports = function(grunt) {
           'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
         }
       },
+      options_tag_date_rename: {
+        options: {
+          tag            : 'date',
+          renameToVersion: true
+        },
+        files: {
+          'tmp/js/js_bundle_a.js': ['test/fake/file1.js', 'test/fake/file2.js'],
+          'tmp/js/js_bundle_b.js': ['test/fake/file3.js', 'test/fake/file4.js']
+        }
+      },
       options_dateFormat: {
         options: {
           tag           : 'date',
@@ -145,7 +155,20 @@ module.exports = function(grunt) {
           versionsMapTrimPath : 'tmp/options_output_trim/'
         }
       },
-      options_versionsMapTemplate: {
+      options_versionsMapTemplateFail: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+              versionsMapFile     : 'tmp/options_versionsMapTemplateFail.php',
+              versionsMapTemplate : 'test/fixtures/templates/php.tpl.missing',
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
+      },
+      options_versionsMapTemplateFile: {
         files: [{
           expand : true,
           cwd    : "test/fixtures/images/",
@@ -153,10 +176,52 @@ module.exports = function(grunt) {
           dest   : "tmp/options_versionsMapTemplate/"
         }],
         options: {
-          versionsMapFile     : 'tmp/options_versionsMapTemplate.php',
+          versionsMapFile     : 'tmp/options_versionsMapTemplateFile.php',
           versionsMapTemplate : 'test/fixtures/templates/php.tpl',
           versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
         }
+      },
+      options_versionsMapTemplateString: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+	          delimiters          : 'altDelimiters',
+              versionsMapFile     : 'tmp/options_versionsMapTemplateString.php',
+              versionsMapTemplate : encodeURI('<?php\r\n\r\nclass MyDict\r\n{\r\n  public static $myDict = array(\r\n<% _.forEach(files, function(file) { %>\r\n    \"<%= file.originalPath %>\" => \"<%= file.versionedPath %>\",\r\n<% }); %>\r\n  );\r\n}\r\n'),
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
+      },
+      options_versionsMapTemplateFunction: {
+          files: [{
+              expand : true,
+              cwd    : "test/fixtures/images/",
+              src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+              dest   : "tmp/options_versionsMapTemplate/"
+          }],
+          options: {
+              delimiters          : 'altDelimiters',
+              versionsMapFile     : 'tmp/options_versionsMapTemplateFunction.php',
+              versionsMapTemplate : function () { return encodeURI('<?php\r\n\r\nclass MyDict\r\n{\r\n  public static $myDict = array(\r\n<% _.forEach(files, function(file) { %>\r\n    \"<%= file.originalPath %>\" => \"<%= file.versionedPath %>\",\r\n<% }); %>\r\n  );\r\n}\r\n'); },
+              versionsMapTrimPath : 'tmp/options_versionsMapTemplate/'
+          }
+      },
+      options_versionsMapDataFile: {
+	      files: [{
+		      expand : true,
+		      cwd    : "test/fixtures/images/",
+		      src    : ['**/*.png', '**/*.jpg', '**/*.gif'],
+		      dest   : "tmp/options_versionsMapDataFile/"
+	      }],
+	      options: {
+		      delimiters                 : 'altDelimiters',
+              versionsMapDataFile        : 'tmp/options_versionsMapDataFile.json',
+		      versionsMapFilesAutoDelete : true,
+		      versionsMapTrimPath        : 'tmp/options_versionsMapDataFile/'
+	      }
       },
       files_compact_format: {
         src: [
@@ -427,6 +492,7 @@ module.exports = function(grunt) {
     'clean',
     'startMocking',
     'assets_versioning:options_tag_date',
+    'assets_versioning:options_tag_date_rename',
     'assets_versioning:options_dateFormat',
     'assets_versioning:options_timezoneOffset',
     'stopMocking',
@@ -439,7 +505,11 @@ module.exports = function(grunt) {
     'assets_versioning:options_post_internal',
     'assets_versioning:options_versionsMapFile',
     'assets_versioning:output_versionsMapTrimPath',
-    'assets_versioning:options_versionsMapTemplate',
+    'assets_versioning:options_versionsMapTemplateFail',
+    'assets_versioning:options_versionsMapTemplateFile',
+    'assets_versioning:options_versionsMapTemplateString',
+    'assets_versioning:options_versionsMapTemplateFunction',
+    'assets_versioning:options_versionsMapDataFile',
     'assets_versioning:files_compact_format',
     'assets_versioning:files_object_format',
     'assets_versioning:files_array_format',

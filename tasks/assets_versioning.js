@@ -11,6 +11,7 @@
 var path = require('path');
 var versionerFactory = require('./versioners/versionerFactory');
 var _ = require('lodash');
+var taggers = require('./taggers');
 
 module.exports = function(grunt) {
 
@@ -24,11 +25,10 @@ module.exports = function(grunt) {
       encoding: 'utf8',
       dateFormat: 'YYYYMMDDHHmmss',
       timezoneOffset: 0,
-      versionize: function(destPath, version) {
+      versionize: function(destPath, version, onlyVersion) {
         return path.dirname(destPath) +
           path.sep +
-          path.basename(destPath, path.extname(destPath)) +
-          '.'+
+          (onlyVersion ? '' : path.basename(destPath, path.extname(destPath)) + '.') +
           version +
           path.extname(destPath);
       },
@@ -41,8 +41,8 @@ module.exports = function(grunt) {
       runTask: true
     });
 
-    if (!_.contains(['hash', 'date'], options.tag)) {
-      grunt.fail.warn('Invalid argument : options.tag should be equal to date or hash', 1);
+    if (!_.includes(Object.keys(taggers), options.tag)) {
+      grunt.fail.warn('Invalid argument : options.tag should be one of: ' + Object.keys(taggers).join(', '), 1);
     }
 
     if (options.post && options.skipExisting) {
