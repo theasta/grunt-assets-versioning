@@ -8,6 +8,8 @@
 
 'use strict';
 
+Object.assign = require('object-assign')
+
 module.exports = function(grunt) {
 
   var _fileGlobSync;

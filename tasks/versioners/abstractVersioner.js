@@ -236,18 +236,18 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
 
 	}.bind(this));
 
-  // make sure there are no desinations that are also sources
+	// make sure there are no desinations that are also sources
 	var destinations = this.versionsMap.map(function (versionMap) {
 		return versionMap.versionedPath;
 	});
 	this.versionsMap = this.versionsMap.filter(function (item) {
-		return !destinations.find(
+		return !_.find(destinations,
 			function (destination) {
 				return destination === item.originalPath;
 			});
 	});
 
-  if (filesMapSkipCount === filesMapLength) {
+	if (filesMapSkipCount === filesMapLength) {
 		grunt.fail.warn("File configuration for Task '" + task.taskName + "' is incorrect. Missing valid source files and/or destination files!");
 	}
 
@@ -310,7 +310,7 @@ AbstractVersioner.prototype.saveVersionsMap = function () {
 		grunt.config.set(originalTask + '.versionsMap', this.versionsMap);
 	}
 
-	if (typeof this.isPostVersioningTask  === 'string') {
+	if (typeof this.isPostVersioningTask === 'string') {
 		grunt.config.set(this.isPostVersioningTask + '.versionsMap', this.versionsMap);
 	}
 

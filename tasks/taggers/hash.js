@@ -20,13 +20,9 @@ module.exports = function (src, options) {
   var digest = null;
 
   src.forEach(function (f) {
-    var input = fs.openSync(f, 'r');
-    var chunk = Buffer.alloc(256);
-    var offset;
-    while (0 !== (offset = fs.readSync(input, chunk, 0, 256))) {
-      hash.update(chunk);
-    }
-    hash.update(f);
+    var input = fs.readFileSync(f, options.encoding);
+    hash.update(input, 'binary');
+    hash.update(f, 'binary');
   });
 
   var hashLength = parseInt(options.hashLength, 10);
