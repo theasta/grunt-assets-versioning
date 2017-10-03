@@ -200,7 +200,7 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
 				// delete items from the map and file system that we are about to re-create
 				this.versionsMap = this.versionsMap.filter(function (item) {
 					if (path.join(versionsMapTrimPath, item.originalPath) === taskFilesObj.dest) {
-						grunt.file.delete(path.resolve(versionsMapTrimPath, item.versionedPath));
+						grunt.file.delete(path.join(versionsMapTrimPath, item.versionedPath));
 						return false;
 					} else {
 						return true;
