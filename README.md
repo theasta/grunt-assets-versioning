@@ -1,5 +1,5 @@
-# grunt-assets-versioning [![Build Status](https://travis-ci.org/theasta/grunt-assets-versioning.svg?branch=master)](https://travis-ci.org/theasta/grunt-assets-versioning) [![NPM version](https://badge.fury.io/js/grunt-assets-versioning.svg)](http://badge.fury.io/js/grunt-assets-versioning)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/theasta/grunt-assets-versioning?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# grunt-assets-versioning
+[![Build Status](https://travis-ci.org/theasta/grunt-assets-versioning.svg?branch=master)](https://travis-ci.org/theasta/grunt-assets-versioning) [![GitHub version](https://badge.fury.io/gh/theasta%2Fgrunt-assets-versioning.svg)](https://badge.fury.io/gh/theasta%2Fgrunt-assets-versioning) [![NPM version](https://badge.fury.io/js/grunt-assets-versioning.svg)](http://badge.fury.io/js/grunt-assets-versioning) [![dependencies](https://david-dm.org/theasta/grunt-assets-versioning.svg)](https://david-dm.org/theasta/grunt-assets-versioning) [![devDependencies](https://david-dm.org/theasta/grunt-assets-versioning/dev-status.svg)](https://david-dm.org/theasta/grunt-assets-versioning?type=dev) [![peerDependencies](https://david-dm.org/theasta/grunt-assets-versioning/peer-status.svg)](https://david-dm.org/theasta/grunt-assets-versioning?type=peer) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/theasta/grunt-assets-versioning?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Versioning static assets with Grunt
 
@@ -55,6 +55,12 @@ Default value: `8`
 
 If you choose to version your files using a hash, hashLength let you set how long the hash is going to be.
 
+#### options.renameToVersion
+Type: `Boolean`
+Default value: `false`
+
+Should the hash replace the file name before the final extension, or (default) should it be just be appended before the final extension? 
+
 #### options.dateFormat
 Type: `String`
 Default value: `YYYYMMDDHHmmss`
@@ -99,17 +105,17 @@ By default you can retrieve the map of versions by accessing this configuration 
 The versionsMapFile gives you the possibility to also output that map to a file.
 
 #### options.versionsMapTemplate
-Type: `String`
+Type: `String` or `Function: String`
 Default value: `null`
 
-Path to a lodash template file that is going to be used to generate the versions map file (options.versionsMapFile)
+Path to a lodash template file or URL-encoded string, optionally returned by a function, that is going to be used to generate the versions map file (options.versionsMapFile).
 
-By default, when no template is indicated, the task will output a json file.
+By default, when no valid template is indicated, the task will output a json file.
 
 The lo-dash template may reuse the keys from the version maps (version, originalPath, versionedPath).
 Here's an example of a lo-dash template to generate a php dictionary.
 
-```php
+```
 <?php
 
 class MyDict
@@ -121,13 +127,26 @@ class MyDict
   );
 ```
 
+#### options.versionsMapDataFile
+Type: `String`
+
+Specifying a file here will store the internal version data in this file for use on subsequent runs.
+
+#### options.versionsMapFilesAutoDelete
+Type: `Boolean`
+Default value: `false`
+
+When generating a new hashed file, delete the old one.
+
+_NOTE: This depends on `options.versionsMapDataFile` being set._
+
 #### options.versionsMapTrimPath
 Type: `String`
 This gives you the possibility to trim the path output in the version map.
 
 For example, if you set options.versionsMapTrimPath to be 'super/long/path/to/', instead of getting this map:
 
-```
+```js
 [
   {
     version: '3d04f375',
@@ -145,7 +164,7 @@ For example, if you set options.versionsMapTrimPath to be 'super/long/path/to/',
 you will get this one:
 
 
-```
+```js
 [
   {
     version: '3d04f375',
@@ -176,7 +195,7 @@ Combined with the skipExisting option, it allows to speed up the deployment proc
 
 If ever you're trying to version a task that doesn't expose all its source files but only an entry point (less, requirejs), you should set the post options to true.
 
-```
+```js
 less: {
   production: {
     files: {
@@ -238,6 +257,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2017-09-07   v1.1.0   Add support for templates from strings, persisting version data between runs, deleting old hashed files, and renaming target files instead of append hash. Also include file name in hash.
 * 2015-01-29   v1.0.4   Fix MomentJS warning
 * 2015-01-28   v1.0.3   Bug fixing.
 * 2014-11-22   v1.0.2   Add a post mode which generates the version hash based on the destination files and not the source files.

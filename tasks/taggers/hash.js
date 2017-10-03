@@ -14,20 +14,24 @@ var fs = require('fs');
  * @returns {string}
  */
 module.exports = function (src, options) {
-  var hash = '';
+  'use strict';
+  var hash = crypto.createHash('md5');
 
-  src.forEach(function(f){
-    hash += crypto.createHash('md5').update(fs.readFileSync(f, options.encoding)).digest('hex');
+  var digest = null;
+
+  src.forEach(function (f) {
+    var input = fs.readFileSync(f, options.encoding);
+    hash.update(input, 'binary');
+    hash.update(f, 'binary');
   });
-  if (src.length > 1){
-    hash = crypto.createHash('md5').update(hash).digest('hex');
-  }
+
   var hashLength = parseInt(options.hashLength, 10);
+  digest = hash.digest('hex');
 
   // can't use typeof since typeof NaN == 'number'
   if (Object.prototype.toString.call(hashLength) === '[object Number]') {
-    hash = hash.substr(0, options.hashLength);
+    digest = digest.substr(0, hashLength);
   }
 
-  return hash;
+  return digest;
 };
