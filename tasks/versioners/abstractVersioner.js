@@ -194,7 +194,7 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
       allVersionedPath.push(versionedPath);
       this.versionsMap.push({
         version: version,
-        originalPath: taskFilesObj.dest.replace(this.options.versionsMapTrimPath, ''),
+        originalPath: src.toString().replace(this.options.versionsMapTrimPath, ''),
         versionedPath: slash(versionedPath)
       });
     }
