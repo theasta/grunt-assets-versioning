@@ -23,14 +23,14 @@ var Task = function (taskName, taskFiles) {
   }
 
   this.taskFiles = taskFiles || this.getFiles();
-  if (!this.taskFiles || this.taskFiles.length === 0) {
+  if ((!this.taskFiles || this.taskFiles.length === 0) && !this.getAssetVersioningConfig(taskName).options.skipEmpty) {
     grunt.fail.warn("Task '" + this.taskName + "' doesn't have any src-dest file mappings.", 1);
   }
 
 };
 
 /**
- * Get the task configuration
+ * Get the task configuration (this is the uglify task configuration)
  * @returns {Object}
  */
 Task.prototype.getTaskConfig = function () {
@@ -38,12 +38,25 @@ Task.prototype.getTaskConfig = function () {
 };
 
 /**
- * Get the task configuration key
+ * Get the task configuration key (this is for the uglify task)
  * @returns {string}
  */
 Task.prototype.getTaskConfigKey = function (taskName) {
   taskName = taskName || this.taskName;
   return taskName.replace(':', '.');
+};
+
+/**
+ * Get the task configuration (this is the assets_versioning task configuration associated with the provided uglify
+ * task)
+ *
+ * @param uglifyTaskName
+ * @returns {Object}
+ */
+Task.prototype.getAssetVersioningConfig = function (uglifyTaskName) {
+  var avTaskName = uglifyTaskName.replace("uglify:", "assets_versioning.");
+
+  return grunt.config(avTaskName);
 };
 
 /**

@@ -86,6 +86,15 @@ AbstractVersioner.prototype.getPreVersioningSurrogateTasks = function () {
  */
 AbstractVersioner.prototype.createPostVersioningTask = function () {
   var intermediateDestFiles = _.flatten(this.getTargetTasks().map(this.retrieveDestFiles.bind(this)));
+
+  if (intermediateDestFiles.length === 0) {
+    if (this.options.skipEmpty) {
+      // this task is allowed to skip empty definitions, return an empty string to be discarded later
+      return "";
+    }
+    grunt.fail.warn("Task '" + this.taskName + "' has no destination files!");
+  }
+
   grunt.log.debug("Retrieved all destination files: " + intermediateDestFiles.join(', '));
   var filesArray = intermediateDestFiles.map(function (destFile) {
     return {src: [destFile], dest: destFile};
@@ -150,9 +159,7 @@ AbstractVersioner.prototype.retrieveDestFiles = function (task) {
     if (!this.checkFilesObjValidity(f, index, filesMapLength)) { return false; }
     destFiles.push(f.dest);
   }.bind(this));
-  if (destFiles.length === 0) {
-    grunt.fail.warn("Task '" + task.taskName + "' has no destination files!");
-  }
+
   return destFiles;
 };
 
@@ -192,11 +199,20 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
       grunt.fail.warn("Duplicate versioned path detected: '" + versionedPath +"'.");
     } else {
       allVersionedPath.push(versionedPath);
-      this.versionsMap.push({
+
+      var vMap = {
         version: version,
         originalPath: taskFilesObj.dest.replace(this.options.versionsMapTrimPath, ''),
         versionedPath: slash(versionedPath)
-      });
+      };
+
+      // in preVersioning scenarios the mapping should retain the original path
+      if (taskFilesObj.src.length === 1) {
+        // override the map only if there is a single source file
+        vMap.originalPath = taskFilesObj.src[0].replace(this.options.versionsMapTrimPath, '');
+      }
+
+      this.versionsMap.push(vMap);
     }
 
     // check if file already exists
@@ -221,7 +237,11 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
   }.bind(this));
 
   if (filesMapSkipCount === filesMapLength) {
-    grunt.fail.warn("File configuration for Task '" + task.taskName + "' is incorrect. Missing valid source files and/or destination files!");
+    if (!this.options.skipEmpty) {
+      // this task is allowed to skip empty definitions, return an empty string to be discarded later
+
+      grunt.fail.warn("File configuration for Task '" + task.taskName + "' is incorrect. Missing valid source files and/or destination files!");
+    }
   }
 
   grunt.log.debug("Versioned Files Object: ", updatedTaskFiles);

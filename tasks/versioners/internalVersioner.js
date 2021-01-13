@@ -6,6 +6,7 @@ var TaskClass = require('../helpers/task');
 var AbstractVersioner = require('./abstractVersioner');
 var inherit = require('../helpers/inherit');
 var grunt = require('grunt');
+var _ = require('lodash');
 
 /**
  * Internal Task Versioner
@@ -79,7 +80,8 @@ InternalVersioner.prototype.doVersion = function () {
 
   if (this.options.post) {
     this._copyOrConcat(this.getTargetTasks()[0].taskFiles);
-    grunt.task.run(this.surrogateTasks);
+    // compact surrogateTasks to remove any empty values due to skipEmpty
+    grunt.task.run(_.compact(this.surrogateTasks));
   } else {
     this._copyOrConcat(this.surrogateTasks[0].files);
   }

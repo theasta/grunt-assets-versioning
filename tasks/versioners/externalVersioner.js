@@ -52,7 +52,8 @@ ExternalVersioner.prototype.getTargetTasks = function () {
 ExternalVersioner.prototype.doVersion = function () {
   if (this.options.runTask) {
     grunt.verbose.writeln("Tasks triggered: '" + this.surrogateTasks.join(", ") + "'");
-    grunt.task.run(this.surrogateTasks);
+    // compact surrogateTasks to remove any empty values due to skipEmpty
+    grunt.task.run(_.compact(this.surrogateTasks));
     this.saveVersionsMap();
   }
 };

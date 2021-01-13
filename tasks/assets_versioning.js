@@ -35,6 +35,7 @@ module.exports = function(grunt) {
       versionsMapFile: null,
       versionsMapTrimPath: '',
       versionsMapTemplate: null,
+      skipEmpty: false,
       skipExisting: false,
       post: false,
       tasks: false,

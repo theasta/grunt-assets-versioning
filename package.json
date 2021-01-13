@@ -1,23 +1,20 @@
 {
-  "name": "grunt-assets-versioning",
+  "name": "@mfettig/grunt-assets-versioning",
   "description": "Versioning static assets with Grunt",
-  "version": "1.0.6",
-  "homepage": "https://github.com/theasta/grunt-assets-versioning",
-  "author": {
-    "name": "Alexandrine Boissière",
-    "email": "theasta@gmail.com"
-  },
+  "version": "1.1.0",
+  "homepage": "https://github.com/mfettig/grunt-assets-versioning",
+  "author": "Mark Fettig",
   "repository": {
     "type": "git",
-    "url": "git://github.com/theasta/grunt-assets-versioning.git"
+    "url": "git://github.com/mfettig/grunt-assets-versioning.git"
   },
   "bugs": {
-    "url": "https://github.com/theasta/grunt-assets-versioning/issues"
+    "url": "https://github.com/mfettig/grunt-assets-versioning/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/theasta/grunt-assets-versioning/blob/master/LICENSE-MIT"
+      "url": "https://github.com/mfettig/grunt-assets-versioning/blob/master/LICENSE-MIT"
     }
   ],
   "main": "Gruntfile.js",
