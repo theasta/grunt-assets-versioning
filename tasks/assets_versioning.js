@@ -41,7 +41,7 @@ module.exports = function(grunt) {
       runTask: true
     });
 
-    if (!_.contains(['hash', 'date'], options.tag)) {
+    if (!_.includes(['hash', 'date'], options.tag)) {
       grunt.fail.warn('Invalid argument : options.tag should be equal to date or hash', 1);
     }
 
