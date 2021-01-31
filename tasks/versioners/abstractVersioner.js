@@ -188,7 +188,7 @@ AbstractVersioner.prototype.createPreVersioningSurrogateTask = function (task) {
     // push to the map of versions
 
     var versionedPath = destFilePath.replace(this.options.versionsMapTrimPath, '');
-    if (_.contains(allVersionedPath, versionedPath)) {
+    if (_.includes(allVersionedPath, versionedPath)) {
       grunt.fail.warn("Duplicate versioned path detected: '" + versionedPath +"'.");
     } else {
       allVersionedPath.push(versionedPath);
